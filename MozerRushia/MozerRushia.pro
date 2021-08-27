@@ -11,11 +11,13 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     spaceship.cpp \
-	weapon.cpp \
+    stage.cpp \
+    weapon.cpp \
     widget.cpp
 
 HEADERS += \
     spaceship.h \
+    stage.h \
     weapon.h \
     widget.h
 
