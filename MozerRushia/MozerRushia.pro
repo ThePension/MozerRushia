@@ -11,10 +11,12 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     spaceship.cpp \
+	weapon.cpp \
     widget.cpp
 
 HEADERS += \
     spaceship.h \
+    weapon.h \
     widget.h
 
 # Default rules for deployment.
