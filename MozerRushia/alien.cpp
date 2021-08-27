@@ -1,6 +1,6 @@
 #include "alien.h"
 
-alien::alien()
+Alien::Alien()
 {
 
 }

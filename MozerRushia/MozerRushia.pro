@@ -16,20 +16,22 @@ SOURCES += \
     player.cpp \
     spaceship.cpp \
     stage.cpp \
-    weapon.cpp \
-    widget.cpp
+    weapon.cpp
 
 HEADERS += \
+    Direction.h \
     alien.h \
     bullet.h \
     game.h \
     player.h \
     spaceship.h \
     stage.h \
-    weapon.h \
-    widget.h
+    weapon.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    ressources.qrc

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>PlayerRocket.png</file>
+        <file>PlayerRocket_Left.png</file>
+        <file>PlayerRocket_Right.png</file>
+    </qresource>
+</RCC>
