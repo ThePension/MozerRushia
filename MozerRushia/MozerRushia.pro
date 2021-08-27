@@ -10,9 +10,11 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    weapon.cpp \
     widget.cpp
 
 HEADERS += \
+    weapon.h \
     widget.h
 
 # Default rules for deployment.
