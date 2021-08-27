@@ -1,4 +1,5 @@
 #include "game.h"
+#include "settings.h"
 #include <QPixmap>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
@@ -13,8 +14,8 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 void Game::run()
 {
     scene()->clear();
-    player = new Player(new QPixmap(":/PlayerRocket.png"), nullptr, this);
-    player->setPos(width() / 2, height() - 50);
+    player = new Player(new QPixmap(":/PlayerRocket.png"), nullptr);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
     scene()->addItem(player);
 }
 

@@ -1,10 +1,10 @@
 #include "player.h"
 #include <QTimer>
 #include <QGraphicsScene>
-Player::Player(QPixmap * sprite, QGraphicsItem *parent, QObject * objParent) : SpaceShip(sprite, parent, objParent)
+Player::Player(QPixmap * sprite, QGraphicsItem *parent) : SpaceShip(sprite, parent)
 {
-    QTimer * moveTimer = new QTimer();
-    moveTimer->start(1000/60);
+    QTimer * moveTimer = new QTimer(this);
+    moveTimer->start(1000/FPS);
     connect(moveTimer, &QTimer::timeout, this, &Player::move);
 }
 
@@ -17,14 +17,14 @@ void Player::move()
     switch (direction) {
         case Direction::any:
             // Sprite droit
-            setPixmap(sprite.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+            setPixmap(sprite.scaled(spaceShipSize, Qt::KeepAspectRatio));
             break;
         case Direction::left:
             if(x() > 0) setPos(x() - speed, y());
-            setPixmap(spriteLeft.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+            setPixmap(spriteLeft.scaled(spaceShipSize, Qt::KeepAspectRatio));
             break;
         case Direction::right:
-            if(x() < scene()->width() - 50) setPos(x() + speed, y());
-            setPixmap(spriteRight.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+            if(x() < scene()->width() - spaceShipSize.width()) setPos(x() + speed, y());
+            setPixmap(spriteRight.scaled(spaceShipSize, Qt::KeepAspectRatio));
     }
 }

@@ -6,7 +6,7 @@
 class Player : public SpaceShip
 {
 public:
-    Player(QPixmap * sprite, QGraphicsItem * parent, QObject * objParent);
+    Player(QPixmap * sprite, QGraphicsItem * parent);
     int score = 0;
     void move();
 };

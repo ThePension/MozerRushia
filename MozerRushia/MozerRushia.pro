@@ -19,11 +19,11 @@ SOURCES += \
     weapon.cpp
 
 HEADERS += \
-    Direction.h \
     alien.h \
     bullet.h \
     game.h \
     player.h \
+    settings.h \
     spaceship.h \
     stage.h \
     weapon.h

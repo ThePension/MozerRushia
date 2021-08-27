@@ -1,7 +1,7 @@
 #include "spaceship.h"
 #include "bullet.h"
 
-SpaceShip::SpaceShip(QPixmap * sprite, QGraphicsItem * parent, QObject * objParent) : QGraphicsPixmapItem(parent), QObject(objParent)
+SpaceShip::SpaceShip(QPixmap * sprite, QGraphicsItem * parent) : QGraphicsPixmapItem(parent)
 {
-    setPixmap(sprite->scaled(QSize(50, 50), Qt::KeepAspectRatio));
+    setPixmap(sprite->scaled(spaceShipSize, Qt::KeepAspectRatio));
 }

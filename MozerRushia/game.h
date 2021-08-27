@@ -5,7 +5,7 @@
 #include <QKeyEvent>
 
 #include "player.h"
-#include "Direction.h"
+#include "settings.h"
 
 class Game : public QGraphicsView
 {

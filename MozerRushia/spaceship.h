@@ -5,12 +5,12 @@
 #include <QGraphicsItem>
 #include <QPixmap>
 
-#include "Direction.h"
+#include "settings.h"
 
-class SpaceShip : public QGraphicsPixmapItem, public QObject
+class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
 public:
-    SpaceShip(QPixmap * sprite, QGraphicsItem * parent, QObject * objParent);
+    SpaceShip(QPixmap * sprite, QGraphicsItem * parent);
     int HP = 3;
     double speed = 10;
     Direction direction = any;
