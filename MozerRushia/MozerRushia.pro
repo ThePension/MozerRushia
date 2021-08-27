@@ -12,6 +12,7 @@ SOURCES += \
     alien.cpp \
     bullet.cpp \
     main.cpp \
+    player.cpp \
     spaceship.cpp \
     stage.cpp \
     weapon.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     alien.h \
     bullet.h \
+    player.h \
     spaceship.h \
     stage.h \
     weapon.h \
