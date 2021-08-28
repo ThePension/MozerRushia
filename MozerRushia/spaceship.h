@@ -7,12 +7,12 @@
 
 #include "settings.h"
 
-class SpaceShip : public QObject, public QGraphicsPixmapItem
+class SpaceShip : public QGraphicsPixmapItem
 {
 public:
-    SpaceShip(QPixmap * sprite, QGraphicsItem * parent);
+    SpaceShip(QPixmap sprite, QGraphicsItem * parent);
     int HP = 3;
-    double speed = 10;
+    double speed = 5;
     Direction direction = any;
 };
 

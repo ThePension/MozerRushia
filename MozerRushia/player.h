@@ -3,11 +3,12 @@
 
 #include "spaceship.h"
 
-class Player : public SpaceShip
+class Player : public QObject, public SpaceShip
 {
 public:
-    Player(QPixmap * sprite, QGraphicsItem * parent);
+    Player(QPixmap sprite, QGraphicsItem * parent);
     int score = 0;
+public slots:
     void move();
 };
 

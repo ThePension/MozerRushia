@@ -1,6 +1,7 @@
 #include "game.h"
 #include "settings.h"
 #include <QPixmap>
+#include <QTimer>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -14,9 +15,19 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 void Game::run()
 {
     scene()->clear();
-    player = new Player(new QPixmap(":/PlayerRocket.png"), nullptr);
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
     player->setPos(width() / 2, height() - spaceShipSize.height());
     scene()->addItem(player);
+
+    QTimer * moveTimer = new QTimer();
+    moveTimer->start(1000/FPS);
+    // Connection for player movements
+    connect(moveTimer, &QTimer::timeout, player, &Player::move);
+}
+
+void Game::test()
+{
+
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -39,5 +50,6 @@ void Game::keyPressEvent(QKeyEvent *e)
 void Game::keyReleaseEvent(QKeyEvent *e)
 {
     // Direction
-    player->direction = Direction::any;
+    if(e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
+        player->direction = Direction::any;
 }

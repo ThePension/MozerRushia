@@ -12,6 +12,8 @@ class Game : public QGraphicsView
 public:
     Game(QWidget * parent = 0, QSize * screenSize = 0);
     void run();
+public slots:
+    void test();
 private:
     Player * player;
 protected:

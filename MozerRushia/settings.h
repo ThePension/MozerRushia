@@ -4,7 +4,7 @@
 #include <QSize>
 
 enum Direction { any, left, right };
-QSize const spaceShipSize = QSize(100, 100);
-int const FPS = 120;
+QSize const spaceShipSize = QSize(150, 150);
+int const FPS = 240;
 
 #endif // SETTINGS_H
