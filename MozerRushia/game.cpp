@@ -2,6 +2,9 @@
 #include "settings.h"
 #include <QPixmap>
 #include <QTimer>
+#include <QPushButton>
+#include <QApplication>
+#include <QHBoxLayout>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -10,6 +13,15 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     scene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
+
+    // Quit button
+    quitButton = new QPushButton(this);
+    quitButton->setText("Quitter le jeu");
+    quitButton->setGeometry(QRect(scene->width() / 2 - 100, scene->height() / 2 - quitButton->size().height() - 50, 200, 100));
+    scene->addWidget(quitButton);
+    quitButton->close();
+    connect(quitButton, &QPushButton::clicked, this, &QApplication::quit);
 }
 
 void Game::run()
@@ -19,15 +31,10 @@ void Game::run()
     player->setPos(width() / 2, height() - spaceShipSize.height());
     scene()->addItem(player);
 
-    QTimer * moveTimer = new QTimer();
+    moveTimer = new QTimer();
     moveTimer->start(1000/FPS);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move);
-}
-
-void Game::test()
-{
-
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -43,6 +50,18 @@ void Game::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Space:
                 // Shoot
+                break;
+            case Qt::Key_Escape:
+                if(moveTimer->isActive()){
+                    moveTimer->stop(); // Pause the game
+                    // Display "Quit" button
+                    quitButton->show();
+                }
+                else {
+                    moveTimer->start(1000/FPS); // Restart
+                    // Remove "Quit" button
+                    quitButton->close();
+                }
                 break;
         }
 }

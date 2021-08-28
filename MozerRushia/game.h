@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QPushButton>
 
 #include "player.h"
 #include "settings.h"
@@ -12,10 +13,10 @@ class Game : public QGraphicsView
 public:
     Game(QWidget * parent = 0, QSize * screenSize = 0);
     void run();
-public slots:
-    void test();
 private:
     Player * player;
+    QTimer * moveTimer;
+    QPushButton * quitButton;
 protected:
     void keyPressEvent(QKeyEvent * e) override;
     void keyReleaseEvent(QKeyEvent * e) override;

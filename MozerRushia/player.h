@@ -3,7 +3,7 @@
 
 #include "spaceship.h"
 
-class Player : public QObject, public SpaceShip
+class Player : public SpaceShip
 {
 public:
     Player(QPixmap sprite, QGraphicsItem * parent);

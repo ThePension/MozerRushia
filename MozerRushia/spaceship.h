@@ -7,7 +7,7 @@
 
 #include "settings.h"
 
-class SpaceShip : public QGraphicsPixmapItem
+class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
 public:
     SpaceShip(QPixmap sprite, QGraphicsItem * parent);
