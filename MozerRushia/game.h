@@ -14,6 +14,7 @@ public:
     Game(QWidget * parent = 0, QSize * screenSize = 0);
     void displayMainMenu();
     void run();
+    Player* getPlayer(){ return player;}
 private:
     Player * player;
     QTimer * moveTimer;

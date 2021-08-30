@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include <QGraphicsScene>
 #include <algorithm>
+#include "player.h"
 
 Stage::Stage()
 {
@@ -16,12 +17,9 @@ void Stage::spawn(QGraphicsScene *scene)
     int posX = rand() % int(scene->width() - 150);
     scene->addItem(a);
     a->setPos(posX, 0);
-    //aliens.push_back(a);
-
 }
 
-void Stage::removeAlien(Alien *a)
+void increaseScore()
 {
-    aliens.erase(std::remove(aliens.begin(), aliens.end(), a), aliens.end());
 
 }
