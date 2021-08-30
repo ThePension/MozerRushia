@@ -50,6 +50,9 @@ void Game::displayMainMenu(){
 
         // Menu background image
         scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+        // Music theme
+
 }
 
 void Game::run()
@@ -71,6 +74,15 @@ void Game::run()
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
+
+    // Rotate view
+    /*
+    QTransform transform;
+    transform.rotate(90);
+    setTransform(transform);
+    */
+
+    //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
