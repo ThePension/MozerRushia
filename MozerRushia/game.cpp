@@ -25,9 +25,34 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     connect(quitButton, &QPushButton::clicked, this, &QApplication::quit);
 }
 
+void Game::displayMainMenu(){
+        // create the title text
+        QGraphicsTextItem* titleText = new QGraphicsTextItem(QString("Mozer Rushia"));
+        QFont titleFont("comic sans", 50);
+        titleText->setFont(titleFont);
+        titleText->setDefaultTextColor(Qt::red);
+        int txPos = this->width()/2 - titleText->boundingRect().width()/2;
+        int tyPos = 150;
+        titleText->setPos(txPos,tyPos);
+        scene()->addItem(titleText);
+
+        // Display the quit button
+        quitButton->show();
+
+        // Creating play button
+        playButton = new QPushButton(this);
+        playButton->setText("Jouer");
+        playButton->setGeometry(QRect(scene()->width() / 2 - 100, scene()->height() / 2 - quitButton->size().height() + 200, 200, 100));
+        scene()->addWidget(playButton);
+        connect(playButton, &QPushButton::clicked, this, &Game::run);
+        playButton->show();
+}
+
 void Game::run()
 {
     scene()->clear();
+    playButton->close();
+    quitButton->close();
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
     player->setPos(width() / 2, height() - spaceShipSize.height());
     scene()->addItem(player);
@@ -37,13 +62,11 @@ void Game::run()
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move);
 
-
     Stage *stage = new Stage();
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
     connect(moveTimer, &QTimer::timeout, [=](){stage->moveAliens();});
-
 }
 
 void Game::keyPressEvent(QKeyEvent *e)

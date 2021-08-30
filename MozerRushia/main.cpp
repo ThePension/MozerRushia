@@ -8,6 +8,6 @@ int main(int argc, char *argv[])
     a.screens().size();
     Game MozerRushia(nullptr, new QSize(a.screens()[0]->size()));
     MozerRushia.showFullScreen();
-    MozerRushia.run();
+    MozerRushia.displayMainMenu();
     return a.exec();
 }
