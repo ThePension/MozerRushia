@@ -55,7 +55,7 @@ void Game::displayMainMenu(){
 void Game::run()
 {
     scene()->clear();
-    scene()->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
+    scene()->setBackgroundBrush(QPixmap(":/Fond_Provisoire.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     playButton->close();
     quitButton->close();
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
