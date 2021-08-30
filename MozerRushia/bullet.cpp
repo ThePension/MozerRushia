@@ -6,9 +6,14 @@ Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixm
 {
     this->speed = speed;
     setPixmap(sprite.scaled(bulletSize, Qt::KeepAspectRatio));
-    QTimer * bTimer = new QTimer();
+    bTimer = new QTimer();
     connect (bTimer, &QTimer::timeout, this, &Bullet::onMove);
     bTimer->start(1000/FPS);
+}
+
+Bullet::~Bullet()
+{
+    delete bTimer;
 }
 
 void Bullet::onMove()
