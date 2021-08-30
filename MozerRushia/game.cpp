@@ -83,6 +83,14 @@ void Game::run()
     */
 
     //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
+
+    //Affichage HUD
+    HUD *HUDText=new HUD(nullptr);
+    scene()->addItem(HUDText);
+    HUDText->show();
+
+    //connect(my_Points, &Bullet::sigAlienCollision, this, &Game::onIncreaseScore);
+
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -122,4 +130,30 @@ void Game::keyReleaseEvent(QKeyEvent *e)
     // Direction
     if(e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
         player->direction = Direction::any;
+}
+
+void Game::CheckPoints()
+{
+    if ((my_Points->GetScore()<0) || (my_Points->GetHealth() <=0))
+    {
+        my_Points->Reset();
+        onGameOver();
+    }
+}
+
+void Game::onIncreaseScore()
+{
+    my_Points->IncreaseScore();
+    CheckPoints();
+}
+
+void Game::onDecreaseHealth()
+{
+    my_Points->DecreaseHealth();
+    CheckPoints();
+}
+
+void Game::onGameOver()
+{
+    close();
 }
