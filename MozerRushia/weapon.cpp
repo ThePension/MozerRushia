@@ -8,7 +8,7 @@ Weapon::Weapon(QGraphicsItem * parent) : QGraphicsPixmapItem(parent)
 
 void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY)
 {
-    QPixmap bSprite(":/PlayerRocket.png");
+    QPixmap bSprite(":/SovietBullet.png");
     Bullet * bullet = new Bullet(bSprite, speed, nullptr);
 
     bullet->setPos(posPlayerSpaceShipX + 50, posPlayerSpaceShipY);

@@ -4,5 +4,11 @@
         <file>PlayerRocket_Left.png</file>
         <file>PlayerRocket_Right.png</file>
         <file>AlienRocket.png</file>
+        <file>AlienShip.png</file>
+        <file>Asteroid.png</file>
+        <file>Asteroid2.png</file>
+        <file>SovietBullet.png</file>
+        <file>Fond_Menu.png</file>
+        <file>Icone.png</file>
     </qresource>
 </RCC>
