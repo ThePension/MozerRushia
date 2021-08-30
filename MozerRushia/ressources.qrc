@@ -3,5 +3,6 @@
         <file>PlayerRocket.png</file>
         <file>PlayerRocket_Left.png</file>
         <file>PlayerRocket_Right.png</file>
+        <file>AlienRocket.png</file>
     </qresource>
 </RCC>
