@@ -71,12 +71,6 @@ void Game::run()
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
-    connect(moveTimer, &QTimer::timeout, [=](){stage->moveAliens();});
-
-
-    //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
-
-
 }
 
 void Game::keyPressEvent(QKeyEvent *e)

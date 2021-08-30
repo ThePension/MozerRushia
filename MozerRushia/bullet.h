@@ -17,7 +17,7 @@ public:
     int speed;
 public:
 signals:
-    void sigAlienCollision(Alien *pAlien);
+    void sigAlienCollision();
 private slots :
     void onMove();
 };

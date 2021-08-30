@@ -1,5 +1,6 @@
 #include "bullet.h"
 #include "alien.h"
+#include "stage.h"
 
 Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixmapItem(parent)
 {
@@ -22,9 +23,8 @@ void Bullet::onMove()
            scene()->removeItem(pAlien);
            scene()->removeItem(this);
 
-           emit sigAlienCollision(pAlien);
-
-           //delete pAlien;
+           emit sigAlienCollision();
+           delete pAlien;
            delete this;
        }
    }
