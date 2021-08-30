@@ -6,6 +6,7 @@
 #include <QPixmap>
 
 #include "settings.h"
+#include "weapon.h"
 
 class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
@@ -13,6 +14,7 @@ public:
     SpaceShip(QPixmap sprite, QGraphicsItem * parent);
     int HP = 3;
     double speed = 5;
+    Weapon * currentWeapon;
     Direction direction = any;
 };
 

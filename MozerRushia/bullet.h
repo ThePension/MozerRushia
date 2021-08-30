@@ -11,8 +11,8 @@
 class Bullet : public QGraphicsPixmapItem, public QObject
 {
 public:
-    Bullet(QPixmap sprite, QGraphicsItem* parent);
-
+    Bullet(QPixmap sprite, int speed, QGraphicsItem* parent);
+    int speed;
 private slots :
     void onMove();
 };

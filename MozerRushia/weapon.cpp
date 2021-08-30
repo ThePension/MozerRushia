@@ -1,16 +1,16 @@
 #include "weapon.h"
 #include "bullet.h"
 
-Weapon::Weapon()
+Weapon::Weapon(QGraphicsItem * parent) : QGraphicsPixmapItem(parent)
 {
 
 }
 
-void Weapon::shoot(int posPlayerSpaceShip)
+void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY)
 {
     QPixmap bSprite(":/PlayerRocket.png");
-    Bullet* bullet = new Bullet(bSprite, nullptr);
+    Bullet * bullet = new Bullet(bSprite, speed, nullptr);
 
-    bullet->setPos(posPlayerSpaceShip,75);
+    bullet->setPos(posPlayerSpaceShipX + 50,posPlayerSpaceShipY);
     scene()->addItem(bullet);
 }

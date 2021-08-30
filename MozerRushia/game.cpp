@@ -50,6 +50,7 @@ void Game::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Space:
                 // Shoot
+                player->currentWeapon->shoot(player->pos().x(), player->pos().y());
                 break;
             case Qt::Key_Escape:
                 if(moveTimer->isActive()){

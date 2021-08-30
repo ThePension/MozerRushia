@@ -1,7 +1,8 @@
 #include "bullet.h"
 
-Bullet::Bullet(QPixmap sprite, QGraphicsItem* parent):QGraphicsPixmapItem(parent)
+Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixmapItem(parent)
 {
+    this->speed = speed;
     setPixmap(sprite.scaled(bulletSize, Qt::KeepAspectRatio));
     QTimer * bTimer = new QTimer();
     connect (bTimer, &QTimer::timeout, this, &Bullet::onMove);
@@ -37,7 +38,7 @@ void Bullet::onMove()
         }
     }*/
 
-    setPos(x(), y()-10);
+    setPos(x(), y() - this->speed);
 
     if (pos().y()<0)
     {

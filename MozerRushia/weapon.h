@@ -12,13 +12,13 @@
 class Weapon : public QGraphicsPixmapItem
 {
 public:
-    Weapon();
-    void shoot(int posPlayerSpaceShip);
+    Weapon(QGraphicsItem * parent);
+    void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY);
 
 private:
     double cadence = 1;
     int damage = 1;
-    int speed = 1;
+    int speed = 3;
     //enum weaponType;
 };
 
