@@ -1,17 +1,24 @@
+#include<QGraphicsScene>
+#include<QGraphicsView>
+#include<QGraphicsPixmapItem>
+
+#include"settings.h"
+
+
 #ifndef WEAPON_H
 #define WEAPON_H
 
 
-class Weapon
+class Weapon : public QGraphicsPixmapItem
 {
 public:
     Weapon();
-    void shoot();
+    void shoot(int posPlayerSpaceShip);
 
 private:
-    double cadence;
-    int damage;
-    int speed;
+    double cadence = 1;
+    int damage = 1;
+    int speed = 1;
     //enum weaponType;
 };
 

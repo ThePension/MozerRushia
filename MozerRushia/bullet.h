@@ -1,11 +1,20 @@
+#include<QGraphicsPixmapItem>
+#include<QGraphicsScene>
+#include<QTimer>
+
+#include "settings.h"
+
 #ifndef BULLET_H
 #define BULLET_H
 
 
-class Bullet
+class Bullet : public QGraphicsPixmapItem, public QObject
 {
 public:
-    Bullet();
+    Bullet(QPixmap sprite, QGraphicsItem* parent);
+
+private slots :
+    void onMove();
 };
 
 #endif // BULLET_H
