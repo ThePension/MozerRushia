@@ -1,4 +1,5 @@
 #include "player.h"
+#include "alien.h"
 #include <QTimer>
 #include <QGraphicsScene>
 Player::Player(QPixmap sprite, QGraphicsItem *parent) : SpaceShip(sprite, parent)
@@ -21,5 +22,18 @@ void Player::move()
         case Direction::right:
             if(x() < scene()->width() - spaceShipSize.width()) setPos(x() + speed, y());
             setPixmap(QPixmap(":/PlayerRocket_Right.png").scaled(spaceShipSize, Qt::KeepAspectRatio));
+    }
+
+    QList<QGraphicsItem*> firstCollidingItem = collidingItems();
+
+    for(auto const pItem : firstCollidingItem)
+    {
+        Alien* pAlien = dynamic_cast<Alien*>(pItem);
+        if(pAlien != nullptr)
+        {
+            scene()->removeItem(pAlien);
+
+            emit sigAlienRocketCollision();
+        }
     }
 }

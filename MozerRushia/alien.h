@@ -12,8 +12,6 @@ public:
 
     void move();
 
-signals:
-    void sigAlienRocketCollision();
 };
 
 #endif // ALIEN_H
