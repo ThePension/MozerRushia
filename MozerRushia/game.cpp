@@ -15,7 +15,6 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     scene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
 
     // Quit button
     quitButton = new QPushButton(this);
@@ -47,11 +46,16 @@ void Game::displayMainMenu(){
         scene()->addWidget(playButton);
         connect(playButton, &QPushButton::clicked, this, &Game::run);
         playButton->show();
+        playButton->setDefault(true);
+
+        // Menu background image
+        scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 void Game::run()
 {
     scene()->clear();
+    scene()->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     playButton->close();
     quitButton->close();
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
