@@ -36,13 +36,13 @@ void Game::run()
     moveTimer->start(1000/FPS);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move);
-    //temp
-    Stage *stage = new Stage();
 
+
+    Stage *stage = new Stage();
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
-    connect(moveTimer, &QTimer::timeout, [=] (){stage->moveAliens();});
+    connect(moveTimer, &QTimer::timeout, [=](){stage->moveAliens();});
 
 }
 
