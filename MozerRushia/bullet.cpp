@@ -1,4 +1,5 @@
 #include "bullet.h"
+#include "alien.h"
 
 Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixmapItem(parent)
 {
@@ -11,32 +12,22 @@ Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixm
 
 void Bullet::onMove()
 {
-    /* QList<QGraphicsItem*> firstCollidingItem = collidingItems();
+     QList<QGraphicsItem*> firstCollidingItem = collidingItems();
 
     for(auto const pItem : firstCollidingItem)
     {
-        CAlien* pAlien = dynamic_cast<CAlien*>(pItem);
+        Alien* pAlien = dynamic_cast<Alien*>(pItem);
         if(pAlien != nullptr)
         {
-            if(pAlien->GetColor() == GetColor())
-            {
-                scene()->removeItem(pAlien);
-                scene()->removeItem(this);
+            scene()->removeItem(pAlien);
+            scene()->removeItem(this);
 
-                emit sigIncreaseScore();
+            emit Bullet::sigAlienCollision(pAlien);
 
-                delete pAlien;
-                delete this;
-            }
-            else
-            {
-                emit sigDecreaseScore();
-                scene()->removeItem(this);
-                delete this;
-            }
-            return;
+            //delete pAlien;
+            delete this;
         }
-    }*/
+    }
 
     setPos(x(), y() - this->speed);
 

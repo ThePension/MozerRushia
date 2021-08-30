@@ -1,6 +1,7 @@
 #include "game.h"
 #include "settings.h"
 #include "stage.h"
+#include "bullet.h"
 #include <QPixmap>
 #include <QTimer>
 #include <QPushButton>
@@ -43,6 +44,8 @@ void Game::run()
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
     connect(moveTimer, &QTimer::timeout, [=](){stage->moveAliens();});
+
+    //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
 
 }
 

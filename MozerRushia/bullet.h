@@ -3,16 +3,21 @@
 #include<QTimer>
 
 #include "settings.h"
+#include "alien.h"
 
 #ifndef BULLET_H
 #define BULLET_H
 
 
-class Bullet : public QGraphicsPixmapItem, public QObject
+class Bullet : public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 public:
     Bullet(QPixmap sprite, int speed, QGraphicsItem* parent);
     int speed;
+public:
+signals:
+    void sigAlienCollision(Alien *pAlien);
 private slots :
     void onMove();
 };
