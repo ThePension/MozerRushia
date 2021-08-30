@@ -9,6 +9,8 @@ class Alien : public SpaceShip
     Q_OBJECT
 public:
     Alien(QPixmap sprite, QGraphicsItem *parent);
+    ~Alien();
+    QTimer * bTimer;
 public slots:
     void move();
 

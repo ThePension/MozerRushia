@@ -14,7 +14,9 @@ class Bullet : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     Bullet(QPixmap sprite, int speed, QGraphicsItem* parent);
+    ~Bullet();
     int speed;
+    QTimer * bTimer;
 public:
 signals:
     void sigAlienCollision();
