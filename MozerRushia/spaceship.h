@@ -10,6 +10,7 @@
 
 class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 public:
     SpaceShip(QPixmap sprite, QGraphicsItem * parent);
     int HP = 3;

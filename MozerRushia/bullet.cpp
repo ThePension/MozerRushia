@@ -12,22 +12,22 @@ Bullet::Bullet(QPixmap sprite, int speed, QGraphicsItem* parent) : QGraphicsPixm
 
 void Bullet::onMove()
 {
-     QList<QGraphicsItem*> firstCollidingItem = collidingItems();
+    QList<QGraphicsItem*> firstCollidingItem = collidingItems();
 
-    for(auto const pItem : firstCollidingItem)
-    {
-        Alien* pAlien = dynamic_cast<Alien*>(pItem);
-        if(pAlien != nullptr)
-        {
-            scene()->removeItem(pAlien);
-            scene()->removeItem(this);
+   for(auto const pItem : firstCollidingItem)
+   {
+       Alien* pAlien = dynamic_cast<Alien*>(pItem);
+       if(pAlien != nullptr)
+       {
+           scene()->removeItem(pAlien);
+           scene()->removeItem(this);
 
-            emit Bullet::sigAlienCollision(pAlien);
+           emit sigAlienCollision(pAlien);
 
-            //delete pAlien;
-            delete this;
-        }
-    }
+           //delete pAlien;
+           delete this;
+       }
+   }
 
     setPos(x(), y() - this->speed);
 
