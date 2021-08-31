@@ -32,6 +32,7 @@ void Player::move()
         if(pAlien != nullptr)
         {
             scene()->removeItem(pAlien);
+            delete(pAlien);
 
             emit sigAlienRocketCollision();
         }
