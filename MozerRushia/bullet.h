@@ -17,6 +17,7 @@ public:
     ~Bullet();
     int speed;
     QTimer * bTimer;
+
 public:
 signals:
     void sigAlienCollision();

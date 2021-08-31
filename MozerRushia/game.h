@@ -29,7 +29,7 @@ private:
     QTimer * moveTimer;
     QPushButton * quitButton;
     QPushButton * playButton;
-    HUD* my_Points = nullptr;
+    HUD* HUDMan = nullptr;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

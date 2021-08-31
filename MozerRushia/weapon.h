@@ -9,11 +9,18 @@
 #define WEAPON_H
 
 
-class Weapon : public QGraphicsPixmapItem
+class Weapon : public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 public:
     Weapon(QGraphicsItem * parent);
     void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY);
+
+signals:
+    void sigScore();
+
+public slots:
+    void sloAlienCollision();
 
 private:
     double cadence = 1;

@@ -13,4 +13,10 @@ void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY)
 
     bullet->setPos(posPlayerSpaceShipX + 50, posPlayerSpaceShipY);
     scene()->addItem(bullet);
+
+    connect(bullet,&Bullet::sigAlienCollision,this,&Weapon::sloAlienCollision);
+}
+void Weapon::sloAlienCollision()
+{
+    emit sigScore();
 }

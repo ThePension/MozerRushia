@@ -54,7 +54,7 @@ void Game::displayMainMenu(){
         scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         // Music theme
-        PlaySound(TEXT("C:\\Users\\jeremy.kuhner\\Desktop\\MotherRussia\\g1\\MozerRushia\\mainTheme.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //PlaySound(TEXT("C:\\Users\\jeremy.kuhner\\Desktop\\MotherRussia\\g1\\MozerRushia\\mainTheme.wav"), NULL, SND_FILENAME | SND_ASYNC);
         //Ne fonctionne qu'avec un chemin absolu
 }
 
@@ -88,11 +88,11 @@ void Game::run()
     //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
 
     //Affichage HUD
-    HUD *HUDText=new HUD(nullptr);
-    scene()->addItem(HUDText);
-    HUDText->show();
+    HUDMan=new HUD(nullptr);
+    scene()->addItem(HUDMan);
+    HUDMan->show();
 
-    //connect(my_Points, &Bullet::sigAlienCollision, this, &Game::onIncreaseScore);
+    connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
 
 }
 
@@ -135,22 +135,23 @@ void Game::keyReleaseEvent(QKeyEvent *e)
         player->direction = Direction::any;
 }
 
-void Game::CheckPoints()
+/*void Game::CheckPoints()
 {
-    if ((my_Points->GetScore()<0) || (my_Points->GetHealth() <=0))
+    if ((HUDMan->GetScore()<0) || (HUDMan->GetHealth() <=0))
     {
-        my_Points->Reset();
+        HUDMan->Reset();
         onGameOver();
     }
-}
+}*/
 
 void Game::onIncreaseScore()
 {
-    my_Points->IncreaseScore();
-    CheckPoints();
+    HUDMan->IncreaseScore();
+    //CheckPoints();
+
 }
 
-void Game::onDecreaseHealth()
+/*void Game::onDecreaseHealth()
 {
     my_Points->DecreaseHealth();
     CheckPoints();
@@ -158,5 +159,5 @@ void Game::onDecreaseHealth()
 
 void Game::onGameOver()
 {
-    close();
-}
+    displayMainMenu();
+}*/
