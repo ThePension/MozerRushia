@@ -11,7 +11,6 @@
         <file>Icone.png</file>
         <file>Fond_Game.jpg</file>
         <file>mainTheme.wav</file>
-        <file>shoot.wav</file>
         <file>Fond_Menu.png</file>
     </qresource>
 </RCC>

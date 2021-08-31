@@ -14,8 +14,8 @@ class Weapon : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     Weapon(QGraphicsItem * parent);
-    void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY);
-
+    void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponNumber);
+    int weaponNumber = 1;
 signals:
     void sigScore();
 

@@ -103,7 +103,7 @@ void Game::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Space:
                 // Shoot
                 if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
-                    player->currentWeapon->shoot(player->pos().x(), player->pos().y());
+                    player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
                 }
                 break;
             case Qt::Key_Escape:
@@ -116,6 +116,20 @@ void Game::keyPressEvent(QKeyEvent *e)
                     moveTimer->start(1000/FPS); // Restart
                     // Remove "Quit" button
                     setScene(gameScene);
+                }
+                break;
+            case Qt::Key_Q:
+                if(moveTimer->isActive()){
+                    if(player->currentWeapon->weaponNumber >= 3){
+                        player->currentWeapon->weaponNumber -= 2;
+                    }
+                }
+                break;
+            case Qt::Key_E:
+                if(moveTimer->isActive()){
+                    if(player->currentWeapon->weaponNumber <= 21){
+                        player->currentWeapon->weaponNumber += 2;
+                    }
                 }
                 break;
         }
