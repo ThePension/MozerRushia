@@ -7,6 +7,12 @@ Player::Player(QPixmap sprite, QGraphicsItem *parent) : SpaceShip(sprite, parent
     currentWeapon = new Weapon(this);
 }
 
+Player::~Player()
+{
+    delete currentWeapon;
+    currentWeapon = nullptr;
+}
+
 
 void Player::move()
 {

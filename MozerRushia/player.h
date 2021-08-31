@@ -8,6 +8,7 @@ class Player : public SpaceShip
     Q_OBJECT
 public:
     Player(QPixmap sprite, QGraphicsItem * parent);
+    ~Player();
     //int score = 0;
 
 signals:

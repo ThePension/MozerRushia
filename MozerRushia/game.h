@@ -34,6 +34,7 @@ private:
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
     QSize * screenSize;
+    QTimer * spawnTimer;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

@@ -16,7 +16,9 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     this->screenSize = screenSize;
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
 
+void Game::displayMainMenu(){
     // Creation menu scene
     mainMenuScene = new MainMenu(this, screenSize);
     mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
@@ -25,12 +27,6 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     connect(mainMenuScene->playButton, &MenuButton::clicked, this, &Game::run);
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
 
-    // Creating game scene
-    gameScene = new QGraphicsScene(this);
-    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-}
-
-void Game::displayMainMenu(){
     // Set the scene with mainMenu scene
     this->setScene(mainMenuScene);
 
@@ -42,6 +38,10 @@ void Game::displayMainMenu(){
 }
 void Game::run()
 {
+    // Creating game scene
+    gameScene = new QGraphicsScene(this);
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
     // Changing for the scene game
     setScene(gameScene);
 
@@ -62,11 +62,11 @@ void Game::run()
     moveTimer->start(1000/FPS);
 
     // Connection for player movements
-    connect(moveTimer, &QTimer::timeout, player, &Player::move);
+    connect(moveTimer, &QTimer::timeout, player, &Player::move, Qt::QueuedConnection);
 
     // Stages creation
     Stage *stage = new Stage();
-    QTimer *spawnTimer = new QTimer();
+    spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(gameScene); });
 
@@ -151,7 +151,10 @@ void Game::onDecreaseHealth()
 
 void Game::onGameOver()
 {
-    close();
+    setScene(mainMenuScene);
+    moveTimer->stop();
+    spawnTimer->stop();
+    gameScene->clear();
 }
 
 void Game::onBackgroundScrolling()

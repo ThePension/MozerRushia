@@ -12,6 +12,7 @@ class HUD: public QGraphicsTextItem
 {
 public:
     HUD(QGraphicsItem* pParent=nullptr);
+    ~HUD();
 
     void IncreaseScore();
     void DecreaseHealth();

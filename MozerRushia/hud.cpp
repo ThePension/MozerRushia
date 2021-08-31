@@ -13,6 +13,11 @@ HUD::HUD(QGraphicsItem *pParent) :QGraphicsTextItem(pParent)
 
 }
 
+HUD::~HUD()
+{
+
+}
+
 void HUD::IncreaseScore()
 {
     my_Score += 50;
