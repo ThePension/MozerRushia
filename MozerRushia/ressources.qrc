@@ -10,7 +10,9 @@
         <file>SovietBullet.png</file>
         <file>Fond_Menu.png</file>
         <file>Icone.png</file>
-        <file>mainTheme.mp3</file>
         <file>Fond_Game.jpg</file>
+        <file>Fond_Provisoire.png</file>
+        <file>mainTheme.wav</file>
+        <file>shoot.wav</file>
     </qresource>
 </RCC>

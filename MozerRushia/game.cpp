@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <windows.h>
 #include <mmsystem.h>
+#include <QDir>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -54,10 +55,11 @@ void Game::displayMainMenu(){
         scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         // Music theme
-        //PlaySound(TEXT("C:\\Users\\jeremy.kuhner\\Desktop\\MotherRussia\\g1\\MozerRushia\\mainTheme.wav"), NULL, SND_FILENAME | SND_ASYNC);
-        //Ne fonctionne qu'avec un chemin absolu
+        // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
+        QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+        QFile::copy(":/mainTheme.wav", path);
+        PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
 }
-
 void Game::run()
 {
     scene()->clear();
