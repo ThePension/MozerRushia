@@ -94,6 +94,7 @@ void Game::run()
 
     connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
     connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
+    connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
 
 }
 
@@ -136,29 +137,28 @@ void Game::keyReleaseEvent(QKeyEvent *e)
         player->direction = Direction::any;
 }
 
-/*void Game::CheckPoints()
+void Game::CheckPoints()
 {
     if ((HUDMan->GetScore()<0) || (HUDMan->GetHealth() <=0))
     {
         HUDMan->Reset();
         onGameOver();
     }
-}*/
+}
 
 void Game::onIncreaseScore()
 {
     HUDMan->IncreaseScore();
-    //CheckPoints();
-
+    CheckPoints();
 }
 
 void Game::onDecreaseHealth()
 {
     HUDMan->DecreaseHealth();
-    //CheckPoints();
+    CheckPoints();
 }
 
-/*void Game::onGameOver()
+void Game::onGameOver()
 {
-    displayMainMenu();
-}*/
+    close();
+}

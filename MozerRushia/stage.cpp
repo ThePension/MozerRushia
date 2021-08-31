@@ -17,9 +17,12 @@ void Stage::spawn(QGraphicsScene *scene)
     int posX = rand() % int(scene->width() - 150);
     scene->addItem(a);
     a->setPos(posX, 0);
+
+    connect(a,&Alien::sigAlienOutOfRange,this,&Stage::sloAlienOutOfRange);
 }
 
-void increaseScore()
+void Stage::sloAlienOutOfRange()
 {
-
+    emit sigDecreaseHealthOutOfRange();
 }
+

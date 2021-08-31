@@ -18,7 +18,6 @@ public:
     int speed;
     QTimer * bTimer;
 
-public:
 signals:
     void sigAlienCollision();
 private slots :
