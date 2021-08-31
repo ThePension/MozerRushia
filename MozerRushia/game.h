@@ -9,7 +9,7 @@
 #include "settings.h"
 #include "hud.h"
 #include "bullet.h"
-#include "menubutton.h"
+#include "mainmenu.h"
 
 class Game : public QGraphicsView
 {
@@ -29,10 +29,11 @@ public slots:
 private:
     Player * player;
     QTimer * moveTimer;
-    MenuButton * quitButton;
-    MenuButton * playButton;
+    MainMenu * mainMenuScene;
+    QGraphicsScene * gameScene;
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
+    QSize * screenSize;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

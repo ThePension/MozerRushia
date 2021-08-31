@@ -8,7 +8,7 @@
 #include "settings.h"
 #include "weapon.h"
 
-class SpaceShip : public QObject, public QGraphicsPixmapItem
+ class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:

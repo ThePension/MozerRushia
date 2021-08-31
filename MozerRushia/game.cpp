@@ -13,61 +13,49 @@
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
-    QGraphicsScene * scene = new QGraphicsScene();
-    setScene(scene);
-    scene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    this->screenSize = screenSize;
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Creating Quit button
-    quitButton = new MenuButton(this);
-    quitButton->setText("Quitter le jeu");
-    quitButton->setGeometry(QRect(scene->width() / 2 - 200, scene->height() / 2 + 75, 400, 100));
-    scene->addWidget(quitButton);
-    quitButton->close();
-    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+    // Creation menu scene
+    mainMenuScene = new MainMenu(this, screenSize);
+    mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
+    // Connect menu's buttons
+    connect(mainMenuScene->playButton, &MenuButton::clicked, this, &Game::run);
+    connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
+
+    // Creating game scene
+    gameScene = new QGraphicsScene(this);
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
 }
 
 void Game::displayMainMenu(){
-        // Display the quit button
-        quitButton->show();
+    // Set the scene with mainMenu scene
+    this->setScene(mainMenuScene);
 
-        // Creating play button
-        playButton = new MenuButton(this);
-        playButton->setText("Jouer");
-        playButton->setGeometry(QRect(scene()->width() / 2 - 200, scene()->height() / 2 - 75, 400, 100));
-        scene()->addWidget(playButton);
-        connect(playButton, &MenuButton::clicked, this, &Game::run);
-        playButton->show();
-        playButton->setDefault(true);
-
-        // Menu background image
-        scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-
-        // Music theme
-        // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-        QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
-        QFile::copy(":/mainTheme.wav", path);
-        PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+    // Music theme
+    // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
+    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+    QFile::copy(":/mainTheme.wav", path);
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
 }
 void Game::run()
 {
-    scene()->clear();
+    // Changing for the scene game
+    setScene(gameScene);
+
     // Background image
     qScrollingBg = new QGraphicsPixmapItem();
-    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(scene()->width());
+    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - scene()->height()));
-    scene()->addItem(qScrollingBg);
-
-    // Menu's buttons
-    playButton->close();
-    quitButton->close();
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    gameScene->addItem(qScrollingBg);
 
     // Player creation
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
     player->setPos(width() / 2, height() - spaceShipSize.height());
-    scene()->addItem(player);
+    gameScene->addItem(player);
 
     // Main timer
     moveTimer = new QTimer();
@@ -80,7 +68,7 @@ void Game::run()
     Stage *stage = new Stage();
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
-    connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(scene()); });
+    connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(gameScene); });
 
     // Rotate view
     /*
@@ -122,12 +110,12 @@ void Game::keyPressEvent(QKeyEvent *e)
                 if(moveTimer->isActive()){
                     moveTimer->stop(); // Pause the game
                     // Display "Quit" button
-                    quitButton->show();
+                    setScene(mainMenuScene);
                 }
                 else {
                     moveTimer->start(1000/FPS); // Restart
                     // Remove "Quit" button
-                    quitButton->close();
+                    setScene(gameScene);
                 }
                 break;
         }

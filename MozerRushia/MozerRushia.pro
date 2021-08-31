@@ -14,6 +14,7 @@ SOURCES += \
     game.cpp \
     hud.cpp \
     main.cpp \
+    mainmenu.cpp \
     menubutton.cpp \
     player.cpp \
     spaceship.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     bullet.h \
     game.h \
     hud.h \
+    mainmenu.h \
     menubutton.h \
     player.h \
     settings.h \
