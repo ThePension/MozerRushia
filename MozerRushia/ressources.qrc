@@ -8,11 +8,10 @@
         <file>Asteroid.png</file>
         <file>Asteroid2.png</file>
         <file>SovietBullet.png</file>
-        <file>Fond_Menu.png</file>
         <file>Icone.png</file>
         <file>Fond_Game.jpg</file>
-        <file>Fond_Provisoire.png</file>
         <file>mainTheme.wav</file>
         <file>shoot.wav</file>
+        <file>Fond_Menu.png</file>
     </qresource>
 </RCC>

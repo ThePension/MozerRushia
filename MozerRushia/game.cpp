@@ -19,35 +19,25 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Quit button
-    quitButton = new QPushButton(this);
+    // Creating Quit button
+    quitButton = new MenuButton(this);
     quitButton->setText("Quitter le jeu");
-    quitButton->setGeometry(QRect(scene->width() / 2 - 100, scene->height() / 2 - quitButton->size().height() - 50, 200, 100));
+    quitButton->setGeometry(QRect(scene->width() / 2 - 200, scene->height() / 2 + 75, 400, 100));
     scene->addWidget(quitButton);
     quitButton->close();
-    connect(quitButton, &QPushButton::clicked, this, &QApplication::quit);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
 }
 
 void Game::displayMainMenu(){
-        // create the title text
-        QGraphicsTextItem* titleText = new QGraphicsTextItem(QString("Mozer Rushia"));
-        QFont titleFont("comic sans", 50);
-        titleText->setFont(titleFont);
-        titleText->setDefaultTextColor(Qt::red);
-        int txPos = this->width()/2 - titleText->boundingRect().width()/2;
-        int tyPos = 150;
-        titleText->setPos(txPos,tyPos);
-        scene()->addItem(titleText);
-
         // Display the quit button
         quitButton->show();
 
         // Creating play button
-        playButton = new QPushButton(this);
+        playButton = new MenuButton(this);
         playButton->setText("Jouer");
-        playButton->setGeometry(QRect(scene()->width() / 2 - 100, scene()->height() / 2 - quitButton->size().height() + 200, 200, 100));
+        playButton->setGeometry(QRect(scene()->width() / 2 - 200, scene()->height() / 2 - 75, 400, 100));
         scene()->addWidget(playButton);
-        connect(playButton, &QPushButton::clicked, this, &Game::run);
+        connect(playButton, &MenuButton::clicked, this, &Game::run);
         playButton->show();
         playButton->setDefault(true);
 

@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "hud.h"
 #include "bullet.h"
+#include "menubutton.h"
 
 class Game : public QGraphicsView
 {
@@ -28,8 +29,8 @@ public slots:
 private:
     Player * player;
     QTimer * moveTimer;
-    QPushButton * quitButton;
-    QPushButton * playButton;
+    MenuButton * quitButton;
+    MenuButton * playButton;
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
 
