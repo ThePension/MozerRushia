@@ -11,5 +11,6 @@
         <file>Fond_Menu.png</file>
         <file>Icone.png</file>
         <file>Fond_Provisoire.png</file>
+        <file>mainTheme.wav</file>
     </qresource>
 </RCC>

@@ -18,4 +18,10 @@ Alien::~Alien()
 void Alien::move()
 {
     setPos(x(), y() + speed);
+
+    if(pos().y() > scene()->height())
+    {
+        scene()->removeItem(this);
+        delete this;
+    }
 }

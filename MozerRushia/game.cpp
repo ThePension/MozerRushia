@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QHBoxLayout>
+#include <windows.h>
+#include <mmsystem.h>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -52,7 +54,8 @@ void Game::displayMainMenu(){
         scene()->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
         // Music theme
-
+        PlaySound(TEXT("C:\\Users\\jeremy.kuhner\\Desktop\\MotherRussia\\g1\\MozerRushia\\mainTheme.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        //Ne fonctionne qu'avec un chemin absolu
 }
 
 void Game::run()
