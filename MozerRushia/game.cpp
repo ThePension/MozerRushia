@@ -93,6 +93,7 @@ void Game::run()
     HUDMan->show();
 
     connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
+    connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
 
 }
 
@@ -151,13 +152,13 @@ void Game::onIncreaseScore()
 
 }
 
-/*void Game::onDecreaseHealth()
+void Game::onDecreaseHealth()
 {
-    my_Points->DecreaseHealth();
-    CheckPoints();
+    HUDMan->DecreaseHealth();
+    //CheckPoints();
 }
 
-void Game::onGameOver()
+/*void Game::onGameOver()
 {
     displayMainMenu();
 }*/

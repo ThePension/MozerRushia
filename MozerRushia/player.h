@@ -8,7 +8,7 @@ class Player : public SpaceShip
     Q_OBJECT
 public:
     Player(QPixmap sprite, QGraphicsItem * parent);
-    int score = 0;
+    //int score = 0;
 
 signals:
     void sigAlienRocketCollision();
