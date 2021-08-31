@@ -22,3 +22,12 @@ MainMenu::MainMenu(QObject * parent, QSize * screenSize) : QGraphicsScene(parent
     // Menu background image
     this->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
+
+MainMenu::~MainMenu()
+{
+    // Delete buttons
+    delete quitButton;
+    quitButton = nullptr;
+    delete playButton;
+    playButton = nullptr;
+}

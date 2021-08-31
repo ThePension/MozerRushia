@@ -10,6 +10,7 @@ class MainMenu : public QGraphicsScene
     Q_OBJECT
 public:
     MainMenu(QObject * parent, QSize * screenSize);
+    ~MainMenu();
 
     MenuButton * quitButton;
     MenuButton * playButton;
