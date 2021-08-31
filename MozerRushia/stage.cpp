@@ -16,7 +16,7 @@ void Stage::spawn(QGraphicsScene *scene)
     Alien *a = new Alien(QPixmap(":/AlienRocket"), nullptr);
     int posX = rand() % int(scene->width() - 150);
     scene->addItem(a);
-    a->setPos(posX, 0);
+    a->setPos(posX, -alienSize.height());
 
     connect(a,&Alien::sigAlienOutOfRange,this,&Stage::sloAlienOutOfRange);
 }

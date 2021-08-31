@@ -61,22 +61,34 @@ void Game::displayMainMenu(){
 void Game::run()
 {
     scene()->clear();
-    scene()->setBackgroundBrush(QPixmap(":/Fond_Provisoire.png").scaled(scene()->width(),scene()->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    // Background image
+    qScrollingBg = new QGraphicsPixmapItem();
+    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(scene()->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - scene()->height()));
+    scene()->addItem(qScrollingBg);
+
+    // Menu's buttons
     playButton->close();
     quitButton->close();
+
+    // Player creation
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
     player->setPos(width() / 2, height() - spaceShipSize.height());
     scene()->addItem(player);
 
+    // Main timer
     moveTimer = new QTimer();
     moveTimer->start(1000/FPS);
+
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move);
 
+    // Stages creation
     Stage *stage = new Stage();
     QTimer *spawnTimer = new QTimer();
     spawnTimer->start(3000);
-    connect(spawnTimer, &QTimer::timeout, [=](){stage->spawn(scene());});
+    connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(scene()); });
 
     // Rotate view
     /*
@@ -85,17 +97,16 @@ void Game::run()
     setTransform(transform);
     */
 
-    //connect(&Bullet::sigAlienCollision(), &Stage::removeAlien);
-
-    //Affichage HUD
+    // HUD Display
     HUDMan=new HUD(nullptr);
     scene()->addItem(HUDMan);
     HUDMan->show();
-
     connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
     connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
     connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
 
+    // Scrolling background connection
+    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling);
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -161,4 +172,9 @@ void Game::onDecreaseHealth()
 void Game::onGameOver()
 {
     close();
+}
+
+void Game::onBackgroundScrolling()
+{
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
 }

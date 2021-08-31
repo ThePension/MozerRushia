@@ -25,7 +25,7 @@ public slots:
 private:
     double cadence = 1;
     int damage = 1;
-    int speed = 3;
+    int speed = 5;
     //enum weaponType;
 };
 

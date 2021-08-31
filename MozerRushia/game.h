@@ -23,6 +23,7 @@ public slots:
     void onIncreaseScore();
     void onDecreaseHealth();
     void onGameOver();
+    void onBackgroundScrolling();
 
 private:
     Player * player;
@@ -30,6 +31,7 @@ private:
     QPushButton * quitButton;
     QPushButton * playButton;
     HUD* HUDMan = nullptr;
+    QGraphicsPixmapItem * qScrollingBg;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
