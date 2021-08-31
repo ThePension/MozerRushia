@@ -165,7 +165,9 @@ void Game::onDecreaseHealth()
 
 void Game::onGameOver()
 {
+    mainMenuScene->setBackgroundBrush(QPixmap(":/GameOver.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     setScene(mainMenuScene);
+
     moveTimer->stop();
     spawnTimer->stop();
     gameScene->clear();
