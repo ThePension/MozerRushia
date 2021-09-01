@@ -14,8 +14,8 @@ signals:
     void sigDecreaseHealthOutOfRange();
 
 public slots:
-    void spawn(QGraphicsScene *scene);
-    void sloAlienOutOfRange();
+    void onSpawn(QGraphicsScene *scene);
+    void onAlienOutOfRange();
 
 private:
     QTimer * moveTimer;

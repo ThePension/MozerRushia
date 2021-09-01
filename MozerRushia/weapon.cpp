@@ -15,7 +15,6 @@ void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponN
     {angle = 0;}
     for(int i = 0; i < weaponNumber; i++)
     {
-
         bullet = new Bullet(bSprite, speed, angle, nullptr, moveTimer);
         bullet->setPos(posPlayerSpaceShipX + spaceShipSize.width() / 2 - bulletSize.width() / 2, posPlayerSpaceShipY - bulletSize.height() / 2);
         scene()->addItem(bullet);

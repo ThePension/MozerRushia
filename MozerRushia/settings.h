@@ -11,5 +11,6 @@ QSize const alienSize = QSize(150, 150);
 
 int const FPS = 144;
 int const gMaxHealth = 3;
+int const lvl=1;
 
 #endif // SETTINGS_H

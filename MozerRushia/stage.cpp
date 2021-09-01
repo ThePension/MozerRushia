@@ -10,18 +10,17 @@ Stage::Stage(QTimer * timer)
     moveTimer = timer;
 }
 
-void Stage::spawn(QGraphicsScene *scene)
+void Stage::onSpawn(QGraphicsScene *scene)
 {
-
-    Alien *a = new Alien(QPixmap(":/AlienRocket"), nullptr, moveTimer);
+    Alien *a = new Alien(QPixmap(":/Asteroid"), nullptr, moveTimer);
     int posX = rand() % int(scene->width() - 150);
     scene->addItem(a);
     a->setPos(posX, -alienSize.height());
 
-    connect(a,&Alien::sigAlienOutOfRange,this,&Stage::sloAlienOutOfRange);
+    connect(a,&Alien::sigAlienOutOfRange,this,&Stage::onAlienOutOfRange);
 }
 
-void Stage::sloAlienOutOfRange()
+void Stage::onAlienOutOfRange()
 {
     emit sigDecreaseHealthOutOfRange();
 }

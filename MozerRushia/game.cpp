@@ -23,6 +23,17 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     // Creation menu scene
     mainMenuScene = new MainMenu(this, screenSize);
     mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
+    // Creation narration Scene
+    historyScene = new QGraphicsScene(this);
+    historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
+
 }
 
 void Game::displayMainMenu(){
@@ -31,30 +42,30 @@ void Game::displayMainMenu(){
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
 
     // Set the scene with mainMenu scene
-    this->setScene(mainMenuScene);
+    setScene(mainMenuScene);
 
     // Music theme
     // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+    /*QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
     QFile::copy(":/mainTheme.wav", path);
-    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);*/
 }
 void Game::run()
 {
-    // Creation narration Scene
-    historyScene = new QGraphicsScene(this);
-    historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    mainMenuScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    // Creation of background item
+    qScrollingBg = new QGraphicsPixmapItem();
+    gameScene->addItem(qScrollingBg);
 
     //next level button
     nxtLvl = new MenuButton(nullptr);
     nxtLvl->setText("Continuer");
     nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
     historyScene->addWidget(nxtLvl);
-    connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit);
+    connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
 
     // Changing for the scene game
     setScene(gameScene);
+
 
     // Creation resume button for pause menu
     resumeButton = new MenuButton(this);
@@ -77,8 +88,10 @@ void Game::run()
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     gameScene->addItem(qScrollingBg);
 
+    if(currentLvl == 1) onChangeLevel();
+
+
     // Main timer
-    moveTimer = new QTimer();
     moveTimer->start(1000/FPS);
 
     // Player creation
@@ -91,9 +104,8 @@ void Game::run()
 
     // Stages creation
     Stage *stage = new Stage(moveTimer);
-    spawnTimer = new QTimer();
     spawnTimer->start(3000);
-    connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(gameScene); });
+    connect(spawnTimer, &QTimer::timeout, [=](){ stage->onSpawn(gameScene); });
 
     // Rotate view
     /*
@@ -102,7 +114,7 @@ void Game::run()
     setTransform(transform);
     */
 
-    // HUD Display
+    // HUD Display //peut etre lié au niveau et pas générique finalement
     HUDMan=new HUD(nullptr);
     scene()->addItem(HUDMan);
     HUDMan->show();
@@ -112,6 +124,35 @@ void Game::run()
 
     // Scrolling background connection
     connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling);
+}
+
+void Game::runLvl1()
+{
+    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    currentLvl+=1;
+}
+
+void Game::runLvl2()
+{
+    /*run();
+    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));*/
+}
+
+void Game::runLvl3()
+{
+    /*run();
+    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));*/
+}
+
+void Game::runArcade()
+{
+
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -210,15 +251,27 @@ void Game::onGameOver()
     gameScene->clear();
 }
 
-/*void Game::onChangeLevel()
+void Game::onChangeLevel()
 {
-    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-    setScene(historyScene);
-
-    moveTimer->stop();
-    spawnTimer->stop();
-    gameScene->clear();
-}*/
+    switch (currentLvl)
+    {
+    case 0:
+        runArcade();
+        break;
+    case 1:
+        runLvl1();
+        break;
+    case 2:
+        runLvl2();
+        break;
+    case 3:
+        runLvl3();
+        break;
+    default:
+        runLvl1();
+        break;
+    }
+}
 
 void Game::onBackgroundScrolling()
 {

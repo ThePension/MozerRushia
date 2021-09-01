@@ -17,6 +17,10 @@ public:
     Game(QWidget * parent = 0, QSize * screenSize = 0);
     void displayMainMenu();
     void run();
+    void runLvl1();
+    void runLvl2();
+    void runLvl3();
+    void runArcade();
     void CheckPoints();
     Player * getPlayer() { return player; }
     QTimer * getMoveTimer() { return moveTimer; }
@@ -43,6 +47,7 @@ private:
     QTimer * spawnTimer;
     MenuButton * resumeButton;
     MenuButton * quitButton;
+    int currentLvl=lvl;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
