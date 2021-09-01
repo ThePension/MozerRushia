@@ -198,6 +198,11 @@ void Game::runArcade()
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
+    // Difficulty management
+    QTimer * difficulty = new QTimer();
+    difficulty->start(10000); // Increase the number of aliens by 1 every 10 seconds
+    connect(difficulty, &QTimer::timeout, [=]() { stage->setNumberOfAliens(stage->getNumberOfAliens() + 1); });
+
     // HUD Display
     HUDMan=new HUD(nullptr);
     scene()->addItem(HUDMan);

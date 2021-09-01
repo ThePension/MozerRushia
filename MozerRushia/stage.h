@@ -9,6 +9,8 @@ class Stage:public QObject
 
 public:
     Stage(QTimer * timer);
+    void setNumberOfAliens(int n);
+    int getNumberOfAliens() { return numberOfAliens; }
 
 signals:
     void sigDecreaseHealthOutOfRange();
@@ -20,6 +22,7 @@ public slots:
 private:
     QTimer * moveTimer;
     int level = 1;
+    int numberOfAliens = 1;
 };
 
 #endif // STAGE_H
