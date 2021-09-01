@@ -16,13 +16,17 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     this->screenSize = screenSize;
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
 
-void Game::displayMainMenu(){
+    // Creating game scene
+    gameScene = new QGraphicsScene(this);
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
     // Creation menu scene
     mainMenuScene = new MainMenu(this, screenSize);
     mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+}
 
+void Game::displayMainMenu(){
     // Connect menu's buttons
     connect(mainMenuScene->playButton, &MenuButton::clicked, this, &Game::run);
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
@@ -38,10 +42,6 @@ void Game::displayMainMenu(){
 }
 void Game::run()
 {
-    // Creating game scene
-    gameScene = new QGraphicsScene(this);
-    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-
     // Changing for the scene game
     setScene(gameScene);
 
