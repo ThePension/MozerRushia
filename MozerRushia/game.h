@@ -8,7 +8,6 @@
 #include "player.h"
 #include "settings.h"
 #include "hud.h"
-#include "bullet.h"
 #include "mainmenu.h"
 
 class Game : public QGraphicsView
@@ -18,19 +17,23 @@ public:
     void displayMainMenu();
     void run();
     void CheckPoints();
-    Player* getPlayer(){ return player;}
+    Player * getPlayer() { return player; }
+    QTimer * getMoveTimer() { return moveTimer; }
 
 public slots:
     void onIncreaseScore();
     void onDecreaseHealth();
     void onGameOver();
+/**/    void onChangeLevel();
     void onBackgroundScrolling();
 
 private:
     Player * player;
     QTimer * moveTimer;
     MainMenu * mainMenuScene;
+    MenuButton * nxtLvl;
     QGraphicsScene * gameScene;
+    QGraphicsScene * historyScene; // will be use for the naration
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
     QSize * screenSize;

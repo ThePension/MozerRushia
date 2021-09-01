@@ -1,7 +1,6 @@
 #include "game.h"
 #include "settings.h"
 #include "stage.h"
-#include "bullet.h"
 #include <QPixmap>
 #include <QTimer>
 #include <QPushButton>
@@ -42,6 +41,18 @@ void Game::displayMainMenu(){
 }
 void Game::run()
 {
+    // Creation narration Scene
+    historyScene = new QGraphicsScene(this);
+    historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    mainMenuScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+    //next level button
+    nxtLvl = new MenuButton(nullptr);
+    nxtLvl->setText("Continuer");
+    nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit);
+
     // Changing for the scene game
     setScene(gameScene);
 
@@ -52,20 +63,20 @@ void Game::run()
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     gameScene->addItem(qScrollingBg);
 
-    // Player creation
-    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
-    player->setPos(width() / 2, height() - spaceShipSize.height());
-    gameScene->addItem(player);
-
     // Main timer
     moveTimer = new QTimer();
     moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
 
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move, Qt::QueuedConnection);
 
     // Stages creation
-    Stage *stage = new Stage();
+    Stage *stage = new Stage(moveTimer);
     spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(gameScene); });
@@ -109,12 +120,11 @@ void Game::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Escape:
                 if(moveTimer->isActive()){
                     moveTimer->stop(); // Pause the game
-                    // Display "Quit" button
                     setScene(mainMenuScene);
                 }
                 else {
                     moveTimer->start(1000/FPS); // Restart
-                    // Remove "Quit" button
+                    spawnTimer->stop();
                     setScene(gameScene);
                 }
                 break;
@@ -165,13 +175,35 @@ void Game::onDecreaseHealth()
 
 void Game::onGameOver()
 {
+    mainMenuScene->setBackgroundBrush(QPixmap(":/GameOver.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     setScene(mainMenuScene);
+
     moveTimer->stop();
     spawnTimer->stop();
     gameScene->clear();
 }
 
+/*void Game::onChangeLevel()
+{
+    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    setScene(historyScene);
+
+    moveTimer->stop();
+    spawnTimer->stop();
+    gameScene->clear();
+}*/
+
 void Game::onBackgroundScrolling()
 {
     qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+
+    if(qScrollingBg->pos().y()>=0) //Valeur critique entre 4266 & 4267 L'idée est la mais nico ça marche pas !!
+    {
+    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        setScene(historyScene);
+
+        moveTimer->stop();
+        spawnTimer->stop();
+        gameScene->clear();
+    }
 }

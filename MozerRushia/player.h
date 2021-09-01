@@ -7,7 +7,7 @@ class Player : public SpaceShip
 {
     Q_OBJECT
 public:
-    Player(QPixmap sprite, QGraphicsItem * parent);
+    Player(QPixmap sprite, QGraphicsItem * parent, QTimer * timer);
     ~Player();
     //int score = 0;
 

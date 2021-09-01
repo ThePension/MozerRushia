@@ -1,3 +1,6 @@
+#ifndef BULLET_H
+#define BULLET_H
+
 #include<QGraphicsPixmapItem>
 #include<QGraphicsScene>
 #include<QTimer>
@@ -5,18 +8,13 @@
 #include "settings.h"
 #include "alien.h"
 
-#ifndef BULLET_H
-#define BULLET_H
-
-
 class Bullet : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Bullet(QPixmap sprite, int speed, double offset, QGraphicsItem* parent);
+    Bullet(QPixmap sprite, int speed, double offset, QGraphicsItem* parent, QTimer * moveTimer);
     ~Bullet();
     int speed;
-    QTimer * bTimer;
     double offset = 0;
 signals:
     void sigAlienCollision();

@@ -2,19 +2,17 @@
 #include "alien.h"
 #include "stage.h"
 
-Bullet::Bullet(QPixmap sprite, int speed, double offsetX, QGraphicsItem* parent) : QGraphicsPixmapItem(parent)
+Bullet::Bullet(QPixmap sprite, int speed, double offsetX, QGraphicsItem* parent, QTimer * moveTimer) : QGraphicsPixmapItem(parent)
 {
     this->speed = speed;
     setPixmap(sprite.scaled(bulletSize, Qt::KeepAspectRatio));
-    bTimer = new QTimer();
-    connect (bTimer, &QTimer::timeout, this, &Bullet::onMove);
-    bTimer->start(1000/FPS);
+    connect(moveTimer, &QTimer::timeout, this, &Bullet::onMove);
     offset = offsetX;
 }
 
 Bullet::~Bullet()
 {
-    delete bTimer;
+
 }
 
 void Bullet::onMove()
@@ -32,6 +30,7 @@ void Bullet::onMove()
            emit sigAlienCollision();
            delete pAlien;
            delete this;
+           return;
        }
    }
 

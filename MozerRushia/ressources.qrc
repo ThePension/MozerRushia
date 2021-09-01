@@ -12,5 +12,7 @@
         <file>Fond_Game.jpg</file>
         <file>mainTheme.wav</file>
         <file>Fond_Menu.png</file>
+        <file>GameOver.png</file>
+        <file>Narration_Test.png</file>
     </qresource>
 </RCC>
