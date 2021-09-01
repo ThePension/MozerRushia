@@ -160,7 +160,7 @@ void Game::runArcade()
     resumeButton->setText("Continuer");
     resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 75, 400, 100));
     gameScene->addWidget(resumeButton);
-    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame);
+    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame, Qt::UniqueConnection);
 
     // Creation quit button for pause menu
     quitButton = new MenuButton(this);
@@ -182,7 +182,6 @@ void Game::runArcade()
     qScrollingBg2->setPos(0, -bgPixmap.size().height());
     gameScene->addItem(qScrollingBg2);
 
-
     // Main timer
     moveTimer->start(1000/FPS);
 
@@ -192,12 +191,12 @@ void Game::runArcade()
     gameScene->addItem(player);
 
     // Connection for player movements
-    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::QueuedConnection);
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
     // Stages creation
-    Stage *stage = new Stage(moveTimer);
+    stage = new Stage(moveTimer);
     spawnTimer->start(3000);
-    connect(spawnTimer, &QTimer::timeout, [=](){ stage->onSpawn(gameScene); });
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
     // HUD Display
     HUDMan=new HUD(nullptr);
@@ -208,7 +207,7 @@ void Game::runArcade()
     connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
 
     // Scrolling background connection
-    connect(moveTimer, &QTimer::timeout, this, &Game::onArcadeModeBackgroundScrolling);
+    connect(moveTimer, &QTimer::timeout, this, &Game::onArcadeModeBackgroundScrolling, Qt::UniqueConnection);
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
