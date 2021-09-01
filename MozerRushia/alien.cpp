@@ -19,8 +19,8 @@ void Alien::onMove()
 
     if(pos().y() > scene()->height())
     {
-        emit sigAlienOutOfRange();
         scene()->removeItem(this);
+        emit sigAlienOutOfRange();
         delete this;
     }
 }
