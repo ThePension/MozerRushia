@@ -91,7 +91,6 @@ void Game::run()
 
     if(currentLvl == 1) onChangeLevel();
 
-
     // Main timer
     moveTimer->start(1000/FPS);
 
@@ -153,7 +152,63 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
+    // Changing for the scene game
+    setScene(gameScene);
 
+    // Creation resume button for pause menu
+    resumeButton = new MenuButton(this);
+    resumeButton->setText("Continuer");
+    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 75, 400, 100));
+    gameScene->addWidget(resumeButton);
+    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame);
+
+    // Creation quit button for pause menu
+    quitButton = new MenuButton(this);
+    quitButton->setText("Quitter le jeu");
+    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 75, 400, 100));
+    gameScene->addWidget(quitButton);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+
+    // Background 1 image
+    qScrollingBg = new QGraphicsPixmapItem();
+    QPixmap bgPixmap = QPixmap(":/Seamless_Background.png").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    gameScene->addItem(qScrollingBg);
+
+    // Background 2 image
+    qScrollingBg2 = new QGraphicsPixmapItem();
+    qScrollingBg2->setPixmap(bgPixmap);
+    qScrollingBg2->setPos(0, -bgPixmap.size().height());
+    gameScene->addItem(qScrollingBg2);
+
+
+    // Main timer
+    moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
+
+    // Connection for player movements
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::QueuedConnection);
+
+    // Stages creation
+    Stage *stage = new Stage(moveTimer);
+    spawnTimer->start(3000);
+    connect(spawnTimer, &QTimer::timeout, [=](){ stage->onSpawn(gameScene); });
+
+    // HUD Display
+    HUDMan=new HUD(nullptr);
+    scene()->addItem(HUDMan);
+    HUDMan->show();
+    connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
+    connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
+    connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
+
+    // Scrolling background connection
+    connect(moveTimer, &QTimer::timeout, this, &Game::onArcadeModeBackgroundScrolling);
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -286,5 +341,18 @@ void Game::onBackgroundScrolling()
         moveTimer->stop();
         spawnTimer->stop();
         gameScene->clear();
+    }
+}
+
+void Game::onArcadeModeBackgroundScrolling()
+{
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+    qScrollingBg2->setPos(qScrollingBg2->pos().x(), qScrollingBg2->pos().y() + 1);
+    if(qScrollingBg->pos().y() >= screenSize->height())
+    {
+        qScrollingBg->setPos(0, -qScrollingBg->pixmap().size().height());
+    }
+    else if(qScrollingBg2->pos().y() >= screenSize->height()){
+        qScrollingBg2->setPos(0, -qScrollingBg2->pixmap().size().height());
     }
 }

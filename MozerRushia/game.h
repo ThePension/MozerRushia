@@ -33,6 +33,7 @@ public slots:
     void onGameOver();
     void onChangeLevel();
     void onBackgroundScrolling();
+    void onArcadeModeBackgroundScrolling();
 
 private:
     Player * player;
@@ -43,6 +44,7 @@ private:
     QGraphicsScene * historyScene; // will be use for the naration
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
+    QGraphicsPixmapItem * qScrollingBg2;
     QSize * screenSize;
     QTimer * spawnTimer;
     MenuButton * resumeButton;
