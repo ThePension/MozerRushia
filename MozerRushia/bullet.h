@@ -11,13 +11,16 @@
 class Bullet : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+
 public:
     Bullet(QPixmap sprite, int speed, double offset, QGraphicsItem* parent, QTimer * moveTimer);
     ~Bullet();
     int speed;
     double offset = 0;
+
 signals:
     void sigAlienCollision();
+
 private slots :
     void onMove();
 };

@@ -13,13 +13,13 @@ public:
 signals:
     void sigDecreaseHealthOutOfRange();
 
-private:
-    QTimer * moveTimer;
-    int level = 1;
-
 public slots:
     void spawn(QGraphicsScene *scene);
     void sloAlienOutOfRange();
+
+private:
+    QTimer * moveTimer;
+    int level = 1;
 };
 
 #endif // STAGE_H

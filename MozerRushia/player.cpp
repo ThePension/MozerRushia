@@ -14,7 +14,7 @@ Player::~Player()
 }
 
 
-void Player::move()
+void Player::onMove()
 {
     switch (direction) {
         case Direction::any:

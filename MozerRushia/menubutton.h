@@ -6,7 +6,7 @@
 class MenuButton : public QPushButton
 {
 public:
-    MenuButton(QWidget* parent = 0);
+    MenuButton(QWidget* parent = nullptr);
 };
 
 #endif // MENUBUTTON_H
