@@ -195,13 +195,20 @@ void Game::runArcade()
 
     // Stages creation
     stage = new Stage(moveTimer);
-    spawnTimer->start(3000);
+    int spawnTimeInterval = 3000;
+    spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
     // Difficulty management
     QTimer * difficulty = new QTimer();
     difficulty->start(10000); // Increase the number of aliens by 1 every 10 seconds
-    connect(difficulty, &QTimer::timeout, [=]() { stage->setNumberOfAliens(stage->getNumberOfAliens() + 1); });
+    connect(difficulty, &QTimer::timeout, [spawnTimeInterval, this]() mutable {
+        // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
+        if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
+        else spawnTimeInterval = 500;
+        spawnTimer->stop();
+        spawnTimer->start(spawnTimeInterval);
+    });
 
     // HUD Display
     HUDMan=new HUD(nullptr);
@@ -228,8 +235,10 @@ void Game::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Space:
                 // Shoot
-                if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
-                    player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
+                if(moveTimer->isActive()){
+                    if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
+                        player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
+                    }
                 }
                 break;
             case Qt::Key_Escape:
