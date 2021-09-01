@@ -5,9 +5,10 @@
 #include <algorithm>
 #include "player.h"
 
-Stage::Stage(QTimer * timer)
+Stage::Stage(QTimer * timer, QPixmap alienSprite)
 {
     moveTimer = timer;
+    this->alienSprite = alienSprite;
 }
 
 void Stage::setNumberOfAliens(int n)
@@ -15,10 +16,15 @@ void Stage::setNumberOfAliens(int n)
     numberOfAliens = n;
 }
 
+void Stage::setAlienSpritePixmap(QPixmap alienSprite)
+{
+    this->alienSprite = alienSprite;
+}
+
 void Stage::onSpawn(QGraphicsScene *scene)
 {
     for(int i = 0; i < numberOfAliens; i++){
-        Alien *a = new Alien(QPixmap(":/Asteroid"), nullptr, moveTimer);
+        Alien *a = new Alien(alienSprite, nullptr, moveTimer);
         int posX = rand() % int(scene->width() - 150);
         scene->addItem(a);
         a->setPos(posX, -alienSize.height());

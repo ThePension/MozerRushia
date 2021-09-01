@@ -37,6 +37,7 @@ public slots:
     void onBackgroundScrolling();
     void onArcadeModeBackgroundScrolling();
     void onSpawn();
+    void onSpawnArcade();
 
 private:
     Stage * stage;

@@ -8,9 +8,10 @@ class Stage:public QObject
     Q_OBJECT
 
 public:
-    Stage(QTimer * timer);
+    Stage(QTimer * timer, QPixmap alienSprite = QPixmap(":/Asteroid"));
     void setNumberOfAliens(int n);
     int getNumberOfAliens() { return numberOfAliens; }
+    void setAlienSpritePixmap(QPixmap alienSprite);
 
 signals:
     void sigDecreaseHealthOutOfRange();
@@ -23,6 +24,7 @@ private:
     QTimer * moveTimer;
     int level = 1;
     int numberOfAliens = 1;
+    QPixmap alienSprite;
 };
 
 #endif // STAGE_H

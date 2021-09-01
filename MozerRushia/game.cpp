@@ -194,10 +194,10 @@ void Game::runArcade()
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
     // Stages creation
-    stage = new Stage(moveTimer);
+    stage = new Stage(moveTimer, QPixmap(":/Asteroid.png"));
     int spawnTimeInterval = 3000;
     spawnTimer->start(spawnTimeInterval);
-    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
     // Difficulty management
     QTimer * difficulty = new QTimer();
@@ -372,5 +372,22 @@ void Game::onArcadeModeBackgroundScrolling()
 
 void Game::onSpawn()
 {
+    stage->onSpawn(gameScene);
+}
+
+void Game::onSpawnArcade()
+{
+    int randSprite = rand()%(3);
+    switch (randSprite) {
+        case 0:
+            stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
+            break;
+        case 1:
+            stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
+            break;
+        case 2:
+            stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
+            break;
+    }
     stage->onSpawn(gameScene);
 }
