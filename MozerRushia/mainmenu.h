@@ -14,7 +14,8 @@ public:
     ~MainMenu();
 
     MenuButton * quitButton;
-    MenuButton * playButton;
+    MenuButton * playArcadeButton;
+    MenuButton * playHistoryButton;
     // MenuButton * settingsButton;
 };
 

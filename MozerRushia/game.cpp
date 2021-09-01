@@ -38,7 +38,8 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 
 void Game::displayMainMenu(){
     // Connect menu's buttons
-    connect(mainMenuScene->playButton, &MenuButton::clicked, this, &Game::run);
+    connect(mainMenuScene->playArcadeButton, &MenuButton::clicked, this, &Game::runArcade);
+    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::run);
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
 
     // Set the scene with mainMenu scene
