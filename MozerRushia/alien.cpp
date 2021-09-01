@@ -2,17 +2,15 @@
 #include "player.h"
 #include <QTimer>
 
-Alien::Alien(QPixmap sprite, QGraphicsItem *parent) : SpaceShip(sprite, parent)
+Alien::Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent, timer)
 {
     speed = 2;
-    bTimer = new QTimer();
-    connect(bTimer, &QTimer::timeout, this, &Alien::move);
-    bTimer->start(1000/FPS);
+    connect(timer, &QTimer::timeout, this, &Alien::move);
 }
 
 Alien::~Alien()
 {
-    delete bTimer;
+
 }
 
 void Alien::move()

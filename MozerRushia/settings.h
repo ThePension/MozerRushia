@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #include <QSize>
+#include <QTimer>
 
 enum Direction { any, left, right };
 QSize const spaceShipSize = QSize(120, 150);

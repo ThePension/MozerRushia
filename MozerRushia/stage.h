@@ -8,13 +8,13 @@ class Stage:public QObject
     Q_OBJECT
 
 public:
-    Stage();
+    Stage(QTimer * timer);
 
 signals:
     void sigDecreaseHealthOutOfRange();
 
 private:
-
+    QTimer * moveTimer;
     int level = 1;
 
 public slots:

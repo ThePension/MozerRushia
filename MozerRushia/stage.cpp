@@ -5,15 +5,15 @@
 #include <algorithm>
 #include "player.h"
 
-Stage::Stage()
+Stage::Stage(QTimer * timer)
 {
-
+    moveTimer = timer;
 }
 
 void Stage::spawn(QGraphicsScene *scene)
 {
 
-    Alien *a = new Alien(QPixmap(":/AlienRocket"), nullptr);
+    Alien *a = new Alien(QPixmap(":/AlienRocket"), nullptr, moveTimer);
     int posX = rand() % int(scene->width() - 150);
     scene->addItem(a);
     a->setPos(posX, -alienSize.height());

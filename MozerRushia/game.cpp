@@ -1,7 +1,6 @@
 #include "game.h"
 #include "settings.h"
 #include "stage.h"
-#include "bullet.h"
 #include <QPixmap>
 #include <QTimer>
 #include <QPushButton>
@@ -52,20 +51,20 @@ void Game::run()
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     gameScene->addItem(qScrollingBg);
 
-    // Player creation
-    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr);
-    player->setPos(width() / 2, height() - spaceShipSize.height());
-    gameScene->addItem(player);
-
     // Main timer
     moveTimer = new QTimer();
     moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
 
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::move, Qt::QueuedConnection);
 
     // Stages creation
-    Stage *stage = new Stage();
+    Stage *stage = new Stage(moveTimer);
     spawnTimer = new QTimer();
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, [=](){ stage->spawn(gameScene); });
@@ -109,12 +108,12 @@ void Game::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Escape:
                 if(moveTimer->isActive()){
                     moveTimer->stop(); // Pause the game
-                    // Display "Quit" button
+                    spawnTimer->stop();
                     setScene(mainMenuScene);
                 }
                 else {
                     moveTimer->start(1000/FPS); // Restart
-                    // Remove "Quit" button
+                    spawnTimer->stop();
                     setScene(gameScene);
                 }
                 break;
