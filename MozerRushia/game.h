@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "hud.h"
 #include "mainmenu.h"
+#include <QGraphicsBlurEffect>
 
 class Game : public QGraphicsView
 {
@@ -19,6 +20,8 @@ public:
     void CheckPoints();
     Player * getPlayer() { return player; }
     QTimer * getMoveTimer() { return moveTimer; }
+    void pauseTheGame();
+    void resumeTheGame();
 
 public slots:
     void onIncreaseScore();
@@ -38,6 +41,8 @@ private:
     QGraphicsPixmapItem * qScrollingBg;
     QSize * screenSize;
     QTimer * spawnTimer;
+    MenuButton * resumeButton;
+    MenuButton * quitButton;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

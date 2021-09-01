@@ -56,6 +56,20 @@ void Game::run()
     // Changing for the scene game
     setScene(gameScene);
 
+    // Creation resume button for pause menu
+    resumeButton = new MenuButton(this);
+    resumeButton->setText("Continuer");
+    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 75, 400, 100));
+    gameScene->addWidget(resumeButton);
+    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame);
+
+    // Creation quit button for pause menu
+    quitButton = new MenuButton(this);
+    quitButton->setText("Quitter le jeu");
+    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 75, 400, 100));
+    gameScene->addWidget(quitButton);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+
     // Background image
     qScrollingBg = new QGraphicsPixmapItem();
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
@@ -119,13 +133,10 @@ void Game::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Escape:
                 if(moveTimer->isActive()){
-                    moveTimer->stop(); // Pause the game
-                    setScene(mainMenuScene);
+                    pauseTheGame();
                 }
                 else {
-                    moveTimer->start(1000/FPS); // Restart
-                    spawnTimer->stop();
-                    setScene(gameScene);
+                    resumeTheGame();
                 }
                 break;
             case Qt::Key_Q:
@@ -159,6 +170,22 @@ void Game::CheckPoints()
         HUDMan->Reset();
         onGameOver();
     }
+}
+
+void Game::pauseTheGame()
+{
+    moveTimer->stop(); // Pause the game
+    spawnTimer->stop();
+    resumeButton->show();
+    quitButton->show();
+}
+
+void Game::resumeTheGame()
+{
+    resumeButton->close();
+    quitButton->close();
+    moveTimer->start(1000/FPS); // Restart
+    spawnTimer->start(3000);
 }
 
 void Game::onIncreaseScore()
