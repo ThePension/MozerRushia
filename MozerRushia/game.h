@@ -24,13 +24,16 @@ public slots:
     void onIncreaseScore();
     void onDecreaseHealth();
     void onGameOver();
+/**/    void onChangeLevel();
     void onBackgroundScrolling();
 
 private:
     Player * player;
     QTimer * moveTimer;
     MainMenu * mainMenuScene;
+    MenuButton * nxtLvl;
     QGraphicsScene * gameScene;
+    QGraphicsScene * historyScene; // will be use for the naration
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
     QSize * screenSize;

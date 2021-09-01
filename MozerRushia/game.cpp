@@ -37,6 +37,19 @@ void Game::displayMainMenu(){
 }
 void Game::run()
 {
+
+    // Creation narration Scene
+    historyScene = new QGraphicsScene(this);
+    historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    mainMenuScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+    //next level button
+    nxtLvl = new MenuButton(nullptr);
+    nxtLvl->setText("Continuer");
+    nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit);
+
     // Creating game scene
     gameScene = new QGraphicsScene(this);
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
@@ -108,7 +121,12 @@ void Game::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Escape:
                 if(moveTimer->isActive()){
                     moveTimer->stop(); // Pause the game
+<<<<<<< Updated upstream
                     spawnTimer->stop();
+=======
+                    // Display "Quit" button
+                    mainMenuScene->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+>>>>>>> Stashed changes
                     setScene(mainMenuScene);
                 }
                 else {
@@ -172,7 +190,27 @@ void Game::onGameOver()
     gameScene->clear();
 }
 
+/*void Game::onChangeLevel()
+{
+    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    setScene(historyScene);
+
+    moveTimer->stop();
+    spawnTimer->stop();
+    gameScene->clear();
+}*/
+
 void Game::onBackgroundScrolling()
 {
     qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+
+    if(qScrollingBg->pos().y()>=0) //Valeur critique entre 4266 & 4267 L'idée est la mais nico ça marche pas !!
+    {
+    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        setScene(historyScene);
+
+        moveTimer->stop();
+        spawnTimer->stop();
+        gameScene->clear();
+    }
 }
