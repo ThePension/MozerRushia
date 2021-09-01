@@ -19,11 +19,13 @@ void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponN
         bullet = new Bullet(bSprite, speed, angle, nullptr, moveTimer);
         bullet->setPos(posPlayerSpaceShipX + spaceShipSize.width() / 2 - bulletSize.width() / 2, posPlayerSpaceShipY - bulletSize.height() / 2);
         scene()->addItem(bullet);
-        connect(bullet,&Bullet::sigAlienCollision,this,&Weapon::sloAlienCollision);
+        connect(bullet,&Bullet::sigAlienCollision,this,&Weapon::onAlienCollision);
         angle += 0.25*2;
     }
 }
-void Weapon::sloAlienCollision()
+
+void Weapon::onAlienCollision()
 {
     emit sigScore();
 }
+

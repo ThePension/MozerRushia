@@ -16,7 +16,7 @@ signals:
     void sigAlienOutOfRange();
 
 public slots:
-    void move();
+    void onMove();
 
 };
 

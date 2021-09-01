@@ -27,7 +27,7 @@ public slots:
     void onIncreaseScore();
     void onDecreaseHealth();
     void onGameOver();
-/**/    void onChangeLevel();
+    void onChangeLevel();
     void onBackgroundScrolling();
 
 private:

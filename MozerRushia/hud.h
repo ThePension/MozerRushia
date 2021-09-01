@@ -11,16 +11,15 @@
 class HUD: public QGraphicsTextItem
 {
 public:
-    HUD(QGraphicsItem* pParent=nullptr);
+    HUD(QGraphicsItem* parent=nullptr);
     ~HUD();
 
     void IncreaseScore();
     void DecreaseHealth();
+    void Reset();
 
     int GetHealth() const;
     int GetScore() const;
-
-    void Reset();
 
 private:
     int my_Health = gMaxHealth;

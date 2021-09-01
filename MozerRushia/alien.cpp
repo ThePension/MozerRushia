@@ -5,7 +5,7 @@
 Alien::Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent, timer)
 {
     speed = 2;
-    connect(timer, &QTimer::timeout, this, &Alien::move);
+    connect(timer, &QTimer::timeout, this, &Alien::onMove);
 }
 
 Alien::~Alien()
@@ -13,7 +13,7 @@ Alien::~Alien()
 
 }
 
-void Alien::move()
+void Alien::onMove()
 {
     setPos(x(), y() + speed);
 

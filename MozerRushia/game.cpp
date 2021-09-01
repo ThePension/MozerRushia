@@ -87,7 +87,7 @@ void Game::run()
     gameScene->addItem(player);
 
     // Connection for player movements
-    connect(moveTimer, &QTimer::timeout, player, &Player::move, Qt::QueuedConnection);
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::QueuedConnection);
 
     // Stages creation
     Stage *stage = new Stage(moveTimer);
@@ -135,7 +135,7 @@ void Game::keyPressEvent(QKeyEvent *e)
                 if(moveTimer->isActive()){
                     pauseTheGame();
                 }
-                else {
+                else{
                     resumeTheGame();
                 }
                 break;
@@ -226,7 +226,7 @@ void Game::onBackgroundScrolling()
 
     if(qScrollingBg->pos().y()>=0) //Valeur critique entre 4266 & 4267 L'idée est la mais nico ça marche pas !!
     {
-    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         setScene(historyScene);
 
         moveTimer->stop();

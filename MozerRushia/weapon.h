@@ -10,15 +10,17 @@
 class Weapon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+
 public:
     Weapon(QGraphicsItem * parent, QTimer * timer);
     void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponNumber);
     int weaponNumber = 1;
+
 signals:
     void sigScore();
 
 public slots:
-    void sloAlienCollision();
+    void onAlienCollision();
 
 private:
     double cadence = 1;

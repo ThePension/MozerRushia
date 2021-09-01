@@ -9,13 +9,12 @@ class Player : public SpaceShip
 public:
     Player(QPixmap sprite, QGraphicsItem * parent, QTimer * timer);
     ~Player();
-    //int score = 0;
 
 signals:
     void sigAlienRocketCollision();
 
 public slots:
-    void move();
+    void onMove();
 };
 
 #endif // PLAYER_H
