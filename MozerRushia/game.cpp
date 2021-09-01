@@ -100,12 +100,12 @@ void Game::run()
     gameScene->addItem(player);
 
     // Connection for player movements
-    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::QueuedConnection);
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
     // Stages creation
-    Stage *stage = new Stage(moveTimer);
+    stage = new Stage(moveTimer);
     spawnTimer->start(3000);
-    connect(spawnTimer, &QTimer::timeout, [=](){ stage->onSpawn(gameScene); });
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
     // Rotate view
     /*
@@ -123,7 +123,7 @@ void Game::run()
     connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
 
     // Scrolling background connection
-    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling);
+    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
 }
 
 void Game::runLvl1()
@@ -136,10 +136,10 @@ void Game::runLvl1()
 
 void Game::runLvl2()
 {
-    /*run();
+    run();
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));*/
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
 }
 
 void Game::runLvl3()
@@ -355,4 +355,9 @@ void Game::onArcadeModeBackgroundScrolling()
     else if(qScrollingBg2->pos().y() >= screenSize->height()){
         qScrollingBg2->setPos(0, -qScrollingBg2->pixmap().size().height());
     }
+}
+
+void Game::onSpawn()
+{
+    stage->onSpawn(gameScene);
 }

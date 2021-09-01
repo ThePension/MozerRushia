@@ -4,12 +4,14 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QPushButton>
+#include <QGraphicsBlurEffect>
 
 #include "player.h"
 #include "settings.h"
 #include "hud.h"
 #include "mainmenu.h"
-#include <QGraphicsBlurEffect>
+#include "stage.h"
+
 
 class Game : public QGraphicsView
 {
@@ -34,8 +36,10 @@ public slots:
     void onChangeLevel();
     void onBackgroundScrolling();
     void onArcadeModeBackgroundScrolling();
+    void onSpawn();
 
 private:
+    Stage * stage;
     Player * player;
     QTimer * moveTimer;
     MainMenu * mainMenuScene;
