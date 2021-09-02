@@ -51,7 +51,7 @@ private:
     Player * player;
     QTimer * moveTimer = nullptr;
     MainMenu * mainMenuScene;
-    MenuButton * nxtLvl;
+    MenuButton * nxtLvl = nullptr;
     QGraphicsScene * gameScene;
     QGraphicsScene * historyScene; // will be use for the naration
     GameOverMenu * gameOverMenu;

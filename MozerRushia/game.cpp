@@ -209,6 +209,9 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
+    // Reset scene rect
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
@@ -465,7 +468,7 @@ void Game::onChangeLevel()
 
 void Game::onBackgroundScrolling()
 {
-    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
 
     if(qScrollingBg->pos().y()>=0)
     {
@@ -527,7 +530,7 @@ void Game::onSpawnArcade()
 
 void Game::onBackToMainMenu()
 {
-    // Delete pause button (because gameScene->clear doesn't do it cause they're attributes of Game class)
+    // Delete pause button (because gameScene->clear doesn't do it if they're attributes of Game class)
     delete backToMenuButton;
     backToMenuButton = nullptr;
     delete resumeButton;
@@ -556,7 +559,7 @@ void Game::onBackToMainMenu()
 
     // Clear all scenes
     gameScene->clear();
-    historyScene->clear();
+    // historyScene->clear();
 
     displayMainMenu();
 }
