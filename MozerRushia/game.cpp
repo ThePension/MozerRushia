@@ -59,25 +59,38 @@ void Game::run()
 
     //next level button
     nxtLvl = new MenuButton(nullptr);
-    nxtLvl->setText("Continuer");
     nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
     historyScene->addWidget(nxtLvl);
-    /*switch(currentLvl)
+    switch(currentLvl)
     {
-    case 1:
+        case 1:
         {
-
+            nxtLvl->setText("Continuer");
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            break;
         }
-    }*/
+        case 2:
+        {
+            nxtLvl->setText("Continuer");
+            //rotateView(270);
+            //gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+            //nxtLvl->setGeometry(QRect(width()/2, height()/2, 200, 100));
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            break;
+        }
+        case 3:
+        {
+            rotateView(180);
+            nxtLvl->setText("Finir");
+            connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit); //will close the game if the narrative isn't finish
+            break;
+        }
+        default:
+        {
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            break;
+        }
 
-
-
-    if(currentLvl!=3)
-        connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
-    else
-    {
-        nxtLvl->setText("Finir");
-        connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit); //will close the game if the narrative isn't finish
     }
 
     // Changing for the scene game
@@ -146,12 +159,9 @@ void Game::runLvl2()
 {
     run();
     HUDMan->setScore(hitCount*50,hitLive);
-    // Rotate view
-    QTransform transform;
-    transform.rotate(90);
-    setTransform(transform);
+    rotateView(90);
     gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
-
+    player->setPos(height() / 2, width() - spaceShipSize.height());
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
@@ -162,6 +172,8 @@ void Game::runLvl3()
 {
     run();
     HUDMan->setScore(hitCount*50, hitLive);
+    rotateView(180);
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
@@ -239,6 +251,14 @@ void Game::runArcade()
 
     // Scrolling background connection
     connect(moveTimer, &QTimer::timeout, this, &Game::onArcadeModeBackgroundScrolling, Qt::UniqueConnection);
+}
+
+void Game::rotateView(int rotationDegree)
+{
+    QTransform transform;
+    transform.rotate(rotationDegree);
+    setTransform(transform);
+
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -342,6 +362,7 @@ void Game::onDecreaseHealth()
 void Game::onGameOver()
 {
     mainMenuScene->setBackgroundBrush(QPixmap(":/GameOver.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     setScene(mainMenuScene);
 
     moveTimer->stop();
@@ -379,7 +400,7 @@ void Game::onChangeLevel()
         break;
     case 2:
         runLvl2();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_2.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     case 3:
         runLvl3();
@@ -398,6 +419,7 @@ void Game::onBackgroundScrolling()
 
     if(qScrollingBg->pos().y()>=0)
     {
+        this->resetTransform();
         setScene(historyScene);
 
         moveTimer->stop();

@@ -23,6 +23,7 @@ public:
     void runLvl2();
     void runLvl3();
     void runArcade();
+    void rotateView(int rotationDegree);
     void CheckPoints();
     Player * getPlayer() { return player; }
     QTimer * getMoveTimer() { return moveTimer; }

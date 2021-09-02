@@ -3,7 +3,7 @@
 
 HUD::HUD(QGraphicsItem *parent) :QGraphicsTextItem(parent)
 {
-    setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(my_Score));
+    //setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(my_Score));
     QFont HUDFont("comic sans", 30);
     setFont(HUDFont);
     setDefaultTextColor(Qt::red);
