@@ -55,6 +55,9 @@ void Game::displayMainMenu(){
 
 void Game::run()
 {
+    // Reset scene rect
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
@@ -462,7 +465,7 @@ void Game::onChangeLevel()
 
 void Game::onBackgroundScrolling()
 {
-    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
 
     if(qScrollingBg->pos().y()>=0)
     {
@@ -542,6 +545,18 @@ void Game::onBackToMainMenu()
         difficultyTimer = nullptr;
     }
 
+    // Reset the view if it was rotated
+    this->resetTransform();
+    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+
+    // Delete next level button
+    delete nxtLvl;
+    nxtLvl = nullptr;
+    currentLvl = 1;
+
+    // Clear all scenes
     gameScene->clear();
+    historyScene->clear();
+
     displayMainMenu();
 }
