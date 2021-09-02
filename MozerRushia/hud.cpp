@@ -35,12 +35,6 @@ void HUD::setScore(int newScore, int newHealth)
     setPlainText(QString("Health : ")+QString::number(newHealth)+"\n"+QString("Score : ")+QString::number(newScore));
 }
 
-/*void HUD::setHealth(int newHealth)
-{
-    setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(newScore));
-
-}*/
-
 int HUD::getHealth() const
 {
     return my_Health;

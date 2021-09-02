@@ -35,6 +35,7 @@ public:
 
 public slots:
     void onIncreaseScore();
+    void onIncreaseHealth();
     void onDecreaseHealth();
     void onGameOver();
     void onChangeLevel();
@@ -60,7 +61,7 @@ private:
     MenuButton * quitButton;
     int currentLvl=lvl;
     int hitCount=0;
-    int hitLive=3;
+    int hitLive=gMaxHealth;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

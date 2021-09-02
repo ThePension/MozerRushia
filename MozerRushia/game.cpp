@@ -62,6 +62,16 @@ void Game::run()
     nxtLvl->setText("Continuer");
     nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
     historyScene->addWidget(nxtLvl);
+    /*switch(currentLvl)
+    {
+    case 1:
+        {
+
+        }
+    }*/
+
+
+
     if(currentLvl!=3)
         connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
     else
@@ -143,6 +153,12 @@ void Game::runLvl2()
 {
     run();
     HUDMan->setScore(hitCount*50,hitLive);
+    // Rotate view
+    QTransform transform;
+    transform.rotate(90);
+    setTransform(transform);
+    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
@@ -283,7 +299,7 @@ void Game::keyReleaseEvent(QKeyEvent *e)
 
 void Game::CheckPoints()
 {
-    if ((HUDMan->getScore()<0) || (HUDMan->getHealth() <=0))
+    if (hitLive <=0)
     {
         hitCount=0;
         hitLive=3;
@@ -310,18 +326,21 @@ void Game::resumeTheGame()
 
 void Game::onIncreaseScore()
 {
-    //HUDMan->increaseScore();
     hitCount+=1;
-    //int temp =hitCount*50;
     HUDMan->setScore(hitCount*50, hitLive);
-    //HUDMan->getScore();
+    CheckPoints();
+}
+
+void Game::onIncreaseHealth()
+{
+    hitLive+=1;
+    HUDMan->setScore(hitCount*50, hitLive);
     CheckPoints();
 }
 
 void Game::onDecreaseHealth()
 {
     hitLive-=1;
-    //HUDMan->decreaseHealth();
     HUDMan->setScore(hitCount*50, hitLive);
     CheckPoints();
 }
@@ -340,26 +359,21 @@ void Game::onChangeLevel()
 {
     switch (currentLvl)
     {
-    case 0:
-        runArcade();
-        //img="a";
-        break;
     case 1:
         runLvl1();
-        //HUDMan->reset();
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
-        //img="Narration_Test";
     case 2:
         runLvl2();
-        //img="Narration_Test_2";
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_2.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     case 3:
         runLvl3();
-        //img="Narration_Test_3";
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_3.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     default:
         runLvl1();
-        //img="Narration_Test";
+        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     }
 }
@@ -370,23 +384,6 @@ void Game::onBackgroundScrolling()
 
     if(qScrollingBg->pos().y()>=0)
     {
-        //switch pour afficher le bon narration scene
-        switch (currentLvl)
-        {
-        case 2:
-            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            break;
-        case 3:
-            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_2.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            break;
-        case 4:
-            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_3.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            break;
-        default:
-            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            break;
-        }
-        //historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         setScene(historyScene);
 
         moveTimer->stop();
