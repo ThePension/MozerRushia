@@ -35,10 +35,6 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     gameOverMenu->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit);
     connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::displayMainMenu);
-
-    // Timers creations
-    spawnTimer = new QTimer();
-    moveTimer = new QTimer();
 }
 
 void Game::displayMainMenu(){
@@ -59,6 +55,10 @@ void Game::displayMainMenu(){
 
 void Game::run()
 {
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
     // Replay button connection
     connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
 
@@ -108,16 +108,23 @@ void Game::run()
     // Creation resume button for pause menu
     resumeButton = new MenuButton(this);
     resumeButton->setText("Continuer");
-    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 75, 400, 100));
+    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
     gameScene->addWidget(resumeButton);
-    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame);
+    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame, Qt::UniqueConnection);
 
     // Creation quit button for pause menu
     quitButton = new MenuButton(this);
     quitButton->setText("Quitter le jeu");
-    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 75, 400, 100));
+    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
     gameScene->addWidget(quitButton);
-    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
+
+    // Creation back to menu button for pause menu
+    backToMenuButton = new MenuButton(this);
+    backToMenuButton->setText("Menu principal");
+    backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
+    gameScene->addWidget(backToMenuButton);
+    connect(backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
 
     // Background image
     qScrollingBg = new QGraphicsPixmapItem();
@@ -199,6 +206,10 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
     // Replay button connection
     connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
 
@@ -208,16 +219,23 @@ void Game::runArcade()
     // Creation resume button for pause menu
     resumeButton = new MenuButton(this);
     resumeButton->setText("Continuer");
-    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 75, 400, 100));
+    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
     gameScene->addWidget(resumeButton);
     connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame, Qt::UniqueConnection);
 
     // Creation quit button for pause menu
     quitButton = new MenuButton(this);
     quitButton->setText("Quitter le jeu");
-    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 75, 400, 100));
+    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
     gameScene->addWidget(quitButton);
     connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+
+    // Creation back to menu button for pause menu
+    backToMenuButton = new MenuButton(this);
+    backToMenuButton->setText("Menu principal");
+    backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
+    gameScene->addWidget(backToMenuButton);
+    connect(backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
 
     // Background 1 image
     qScrollingBg = new QGraphicsPixmapItem();
@@ -249,9 +267,9 @@ void Game::runArcade()
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
     // Difficulty management
-    QTimer * difficulty = new QTimer();
-    difficulty->start(10000); // Increase the number of aliens by 1 every 10 seconds
-    connect(difficulty, &QTimer::timeout,[this]()  mutable {
+    difficultyTimer = new QTimer();
+    difficultyTimer->start(10000); // Increase the number of aliens by 1 every 10 seconds
+    connect(difficultyTimer, &QTimer::timeout,[this]()  mutable {
         // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
         if(moveTimer->isActive()){
             if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
@@ -294,29 +312,33 @@ void Game::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Space:
                 // Shoot
-                if(moveTimer->isActive()){
-                    if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
-                        player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
+                if(moveTimer != nullptr){
+                    if(moveTimer->isActive()){
+                        if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
+                            player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
+                        }
                     }
                 }
                 break;
             case Qt::Key_Escape:
-                if(moveTimer->isActive()){
-                    pauseTheGame();
-                }
-                else{
-                    resumeTheGame();
+                if(moveTimer != nullptr){
+                    if(moveTimer != nullptr && moveTimer->isActive()) {
+                        pauseTheGame();
+                    }
+                    else{
+                        resumeTheGame();
+                    }
                 }
                 break;
             case Qt::Key_Q:
-                if(moveTimer->isActive()){
+                if(moveTimer != nullptr && moveTimer->isActive()){
                     if(player->currentWeapon->weaponNumber >= 3){
                         player->currentWeapon->weaponNumber -= 2;
                     }
                 }
                 break;
             case Qt::Key_E:
-                if(moveTimer->isActive()){
+                if(moveTimer != nullptr && moveTimer->isActive()){
                     if(player->currentWeapon->weaponNumber <= 21){
                         player->currentWeapon->weaponNumber += 2;
                     }
@@ -347,6 +369,7 @@ void Game::pauseTheGame()
     moveTimer->stop(); // Pause the game
     spawnTimer->stop();
     resumeButton->show();
+    backToMenuButton->show();
     quitButton->show();
 }
 
@@ -354,6 +377,7 @@ void Game::resumeTheGame()
 {
     resumeButton->close();
     quitButton->close();
+    backToMenuButton->close();
     moveTimer->start(1000/FPS); // Restart
     spawnTimer->start(spawnTimeInterval);
 }
@@ -385,9 +409,9 @@ void Game::onGameOver()
     setScene(gameOverMenu);
     this->resetTransform();
 
-    // Stop timers
-    moveTimer->stop();
-    spawnTimer->stop();
+    // Delete timers
+    delete moveTimer;
+    delete spawnTimer;
 
     // Display the score
     QTextDocument * oldDocument = gameOverMenu->scoreText->document();
@@ -496,4 +520,28 @@ void Game::onSpawnArcade()
             break;
     }
     stage->onSpawn(gameScene);
+}
+
+void Game::onBackToMainMenu()
+{
+    // Delete pause button (because gameScene->clear doesn't do it cause they're attributes of Game class)
+    delete backToMenuButton;
+    backToMenuButton = nullptr;
+    delete resumeButton;
+    resumeButton = nullptr;
+    delete quitButton;
+    quitButton = nullptr;
+
+    // Delete timers
+    delete moveTimer;
+    moveTimer = nullptr;
+    delete spawnTimer;
+    spawnTimer = nullptr;
+    if(difficultyTimer != nullptr) {
+        delete difficultyTimer;
+        difficultyTimer = nullptr;
+    }
+
+    gameScene->clear();
+    displayMainMenu();
 }

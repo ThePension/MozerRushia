@@ -44,11 +44,12 @@ public slots:
     void onArcadeModeBackgroundScrolling();
     void onSpawn();
     void onSpawnArcade();
+    void onBackToMainMenu();
 
 private:
     Stage * stage;
     Player * player;
-    QTimer * moveTimer;
+    QTimer * moveTimer = nullptr;
     MainMenu * mainMenuScene;
     MenuButton * nxtLvl;
     QGraphicsScene * gameScene;
@@ -58,9 +59,11 @@ private:
     QGraphicsPixmapItem * qScrollingBg;
     QGraphicsPixmapItem * qScrollingBg2;
     QSize * screenSize;
-    QTimer * spawnTimer;
+    QTimer * spawnTimer = nullptr;
+    QTimer * difficultyTimer = nullptr;
     MenuButton * resumeButton;
     MenuButton * quitButton;
+    MenuButton * backToMenuButton;
     int currentLvl=lvl;
     int hitCount=0;
     int hitLive=gMaxHealth;
