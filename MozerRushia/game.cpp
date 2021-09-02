@@ -17,6 +17,12 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+    // Remove white border of view
+    this->setStyleSheet("border-width: 0px; border-style: solid");
+
     // Creating game scene
     gameScene = new QGraphicsScene(this);
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
@@ -55,6 +61,9 @@ void Game::displayMainMenu(){
 
 void Game::run()
 {
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
 
@@ -209,6 +218,9 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
 
@@ -377,6 +389,8 @@ void Game::pauseTheGame()
     resumeButton->show();
     backToMenuButton->show();
     quitButton->show();
+    // Show cursor
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 void Game::resumeTheGame()
@@ -386,6 +400,8 @@ void Game::resumeTheGame()
     backToMenuButton->close();
     moveTimer->start(1000/FPS); // Restart
     spawnTimer->start(spawnTimeInterval);
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
 }
 
 void Game::onIncreaseScore()
@@ -436,8 +452,16 @@ void Game::onGameOver()
     // Reset the score
     hitCount = 0;
 
+    // Delete next level button
+    /*delete nxtLvl;
+    nxtLvl = nullptr;*/
+    currentLvl = 1;
+
     // Clear the game scene
     gameScene->clear();
+
+    // Show cursor
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 //ajouter un autre gameover (pour histoire afin de recommencer au début du jeu)
 void Game::onChangeLevel()
@@ -468,7 +492,7 @@ void Game::onChangeLevel()
 
 void Game::onBackgroundScrolling()
 {
-    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
 
     if(qScrollingBg->pos().y()>=0)
     {
@@ -478,6 +502,9 @@ void Game::onBackgroundScrolling()
         moveTimer->stop();
         spawnTimer->stop();
         gameScene->clear();
+
+        // Show cursor
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
     }
 }
 
