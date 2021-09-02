@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <QDir>
+#include <QDebug>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -32,8 +33,6 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
-
-
 }
 
 void Game::displayMainMenu(){
@@ -51,6 +50,7 @@ void Game::displayMainMenu(){
     QFile::copy(":/mainTheme.wav", path);
     PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);*/
 }
+
 void Game::run()
 {
     // Creation of background item
@@ -62,11 +62,16 @@ void Game::run()
     nxtLvl->setText("Continuer");
     nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
     historyScene->addWidget(nxtLvl);
-    connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+    if(currentLvl!=3)
+        connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+    else
+    {
+        nxtLvl->setText("Finir");
+        connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit); //will close the game if the narrative isn't finish
+    }
 
     // Changing for the scene game
     setScene(gameScene);
-
 
     // Creation resume button for pause menu
     resumeButton = new MenuButton(this);
@@ -116,7 +121,7 @@ void Game::run()
 
     // HUD Display //peut etre lié au niveau et pas générique finalement
     HUDMan=new HUD(nullptr);
-    scene()->addItem(HUDMan);
+    scene()->addItem(HUDMan); //Pourquoi scene et pas gameScene ?
     HUDMan->show();
     connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
     connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
@@ -137,17 +142,20 @@ void Game::runLvl1()
 void Game::runLvl2()
 {
     run();
+    HUDMan->setScore(hitCount*50,hitLive);
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    currentLvl+=1;
 }
 
 void Game::runLvl3()
 {
-    /*run();
+    run();
+    HUDMan->setScore(hitCount*50, hitLive);
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));*/
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
 }
 
 void Game::runArcade()
@@ -275,9 +283,11 @@ void Game::keyReleaseEvent(QKeyEvent *e)
 
 void Game::CheckPoints()
 {
-    if ((HUDMan->GetScore()<0) || (HUDMan->GetHealth() <=0))
+    if ((HUDMan->getScore()<0) || (HUDMan->getHealth() <=0))
     {
-        HUDMan->Reset();
+        hitCount=0;
+        hitLive=3;
+        HUDMan->reset();
         onGameOver();
     }
 }
@@ -300,13 +310,19 @@ void Game::resumeTheGame()
 
 void Game::onIncreaseScore()
 {
-    HUDMan->IncreaseScore();
+    //HUDMan->increaseScore();
+    hitCount+=1;
+    //int temp =hitCount*50;
+    HUDMan->setScore(hitCount*50, hitLive);
+    //HUDMan->getScore();
     CheckPoints();
 }
 
 void Game::onDecreaseHealth()
 {
-    HUDMan->DecreaseHealth();
+    hitLive-=1;
+    //HUDMan->decreaseHealth();
+    HUDMan->setScore(hitCount*50, hitLive);
     CheckPoints();
 }
 
@@ -319,25 +335,31 @@ void Game::onGameOver()
     spawnTimer->stop();
     gameScene->clear();
 }
-
+//ajouter un autre gameover (pour histoire afin de recommencer au début du jeu)
 void Game::onChangeLevel()
 {
     switch (currentLvl)
     {
     case 0:
         runArcade();
+        //img="a";
         break;
     case 1:
         runLvl1();
+        //HUDMan->reset();
         break;
+        //img="Narration_Test";
     case 2:
         runLvl2();
+        //img="Narration_Test_2";
         break;
     case 3:
         runLvl3();
+        //img="Narration_Test_3";
         break;
     default:
         runLvl1();
+        //img="Narration_Test";
         break;
     }
 }
@@ -346,9 +368,25 @@ void Game::onBackgroundScrolling()
 {
     qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
 
-    if(qScrollingBg->pos().y()>=0) //Valeur critique entre 4266 & 4267 L'idée est la mais nico ça marche pas !!
+    if(qScrollingBg->pos().y()>=0)
     {
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        //switch pour afficher le bon narration scene
+        switch (currentLvl)
+        {
+        case 2:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 3:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_2.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 4:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_3.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        default:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        }
+        //historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         setScene(historyScene);
 
         moveTimer->stop();

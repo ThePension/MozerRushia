@@ -29,6 +29,10 @@ public:
     void pauseTheGame();
     void resumeTheGame();
 
+    //int my_Old_Score=0;//pour tenter de garder le score a jours
+    //std::string img = "Hello";
+
+
 public slots:
     void onIncreaseScore();
     void onDecreaseHealth();
@@ -55,6 +59,8 @@ private:
     MenuButton * resumeButton;
     MenuButton * quitButton;
     int currentLvl=lvl;
+    int hitCount=0;
+    int hitLive=3;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
