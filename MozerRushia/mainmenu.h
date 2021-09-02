@@ -21,8 +21,6 @@ public:
     MenuButton * quitButton;
     MenuButton * playArcadeButton;
     MenuButton * playHistoryButton;
-    QGraphicsTextItem * scoreText;
-    QTextDocument * scoreTextDocument;
     // MenuButton * settingsButton;
 };
 

@@ -30,6 +30,12 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
+    // Creation game over scene
+    gameOverMenu = new GameOverMenu(this, screenSize);
+    gameOverMenu->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit);
+    connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::displayMainMenu);
+
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
@@ -37,9 +43,9 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 
 void Game::displayMainMenu(){
     // Connect menu's buttons
-    connect(mainMenuScene->playArcadeButton, &MenuButton::clicked, this, &Game::runArcade);
-    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::run);
-    connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit);
+    connect(mainMenuScene->playArcadeButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
+    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
+    connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
 
     // Set the scene with mainMenu scene
     setScene(mainMenuScene);
@@ -53,6 +59,9 @@ void Game::displayMainMenu(){
 
 void Game::run()
 {
+    // Replay button connection
+    connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
+
     // Creation of background item
     qScrollingBg = new QGraphicsPixmapItem();
     gameScene->addItem(qScrollingBg);
@@ -190,7 +199,8 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
-    mainMenuScene->scoreText->hide();
+    // Replay button connection
+    connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
 
     // Changing for the scene game
     setScene(gameScene);
@@ -252,7 +262,7 @@ void Game::runArcade()
 
     // HUD Display
     HUDMan=new HUD(nullptr);
-    scene()->addItem(HUDMan);
+    gameScene->addItem(HUDMan);
     HUDMan->show();
     connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
     connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
@@ -370,16 +380,15 @@ void Game::onDecreaseHealth()
 
 void Game::onGameOver()
 {
-    mainMenuScene->setBackgroundBrush(QPixmap(":/GameOver.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    setScene(mainMenuScene);
+    // Change scene for game over
+    setScene(gameOverMenu);
 
+    // Stop timers
     moveTimer->stop();
     spawnTimer->stop();
 
     // Display the score
-    mainMenuScene->scoreText->show();
-    QTextDocument * oldDocument = mainMenuScene->scoreText->document();
+    QTextDocument * oldDocument = gameOverMenu->scoreText->document();
     delete oldDocument;
     oldDocument = nullptr;
     QTextDocument * document = new QTextDocument();
@@ -390,7 +399,7 @@ void Game::onGameOver()
     QTextCursor cursor = QTextCursor(document);
     cursor.clearSelection();
     cursor.insertText("Score : " + QString::number(hitCount*50), charFormat);
-    mainMenuScene->scoreText->setDocument(document);
+    gameOverMenu->scoreText->setDocument(document);
 
     // Reset the score
     hitCount = 0;

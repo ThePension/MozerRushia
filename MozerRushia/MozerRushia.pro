@@ -13,6 +13,7 @@ SOURCES += \
     bullet.cpp \
     drop.cpp \
     game.cpp \
+    gameovermenu.cpp \
     hud.cpp \
     main.cpp \
     mainmenu.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     bullet.h \
     drop.h \
     game.h \
+    gameovermenu.h \
     hud.h \
     mainmenu.h \
     menubutton.h \

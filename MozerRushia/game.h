@@ -11,6 +11,7 @@
 #include "hud.h"
 #include "mainmenu.h"
 #include "stage.h"
+#include "gameovermenu.h"
 
 
 class Game : public QGraphicsView
@@ -53,6 +54,7 @@ private:
     MenuButton * nxtLvl;
     QGraphicsScene * gameScene;
     QGraphicsScene * historyScene; // will be use for the naration
+    GameOverMenu * gameOverMenu;
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
     QGraphicsPixmapItem * qScrollingBg2;
