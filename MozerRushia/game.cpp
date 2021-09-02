@@ -141,7 +141,7 @@ void Game::run()
 
     // Stages creation
     stage = new Stage(moveTimer);
-    spawnTimer->start(3000);
+    spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
     // HUD Display //peut etre lié au niveau et pas générique finalement
@@ -175,7 +175,7 @@ void Game::runLvl2()
     HUDMan->setPos(50,screenSize->width()-50);
     HUDMan->pos();
     player->setPos(height() / 2, width() - spaceShipSize.height());
-    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl2.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     currentLvl+=1;
@@ -184,6 +184,7 @@ void Game::runLvl2()
 void Game::runLvl3()
 {
     run();
+    spawnTimeInterval=1000;
     HUDMan->setScore(hitCount*50, hitLive);
     rotateView(180);
     HUDMan->setRotation(-180);
@@ -191,7 +192,7 @@ void Game::runLvl3()
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     HUDMan->setPos(screenSize->width()-50,screenSize->height()-50);
     HUDMan->pos();
-    QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl3.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     currentLvl+=1;
@@ -245,14 +246,13 @@ void Game::runArcade()
 
     // Stages creation
     stage = new Stage(moveTimer, QPixmap(":/Asteroid.png"));
-    int spawnTimeInterval = 3000;
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
     // Difficulty management
     QTimer * difficulty = new QTimer();
     difficulty->start(10000); // Increase the number of aliens by 1 every 10 seconds
-    connect(difficulty, &QTimer::timeout, [spawnTimeInterval, this]() mutable {
+    connect(difficulty, &QTimer::timeout,[this]()  mutable {
         // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
         if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
         else spawnTimeInterval = 500;
@@ -354,7 +354,7 @@ void Game::resumeTheGame()
     resumeButton->close();
     quitButton->close();
     moveTimer->start(1000/FPS); // Restart
-    spawnTimer->start(3000);
+    spawnTimer->start(spawnTimeInterval);
 }
 
 void Game::onIncreaseScore()
@@ -382,6 +382,7 @@ void Game::onGameOver()
 {
     // Change scene for game over
     setScene(gameOverMenu);
+    this->resetTransform();
 
     // Stop timers
     moveTimer->stop();
@@ -413,14 +414,17 @@ void Game::onChangeLevel()
     switch (currentLvl)
     {
     case 1:
+        spawnTimeInterval=1500;
         runLvl1();
         historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     case 2:
+        spawnTimeInterval=750;
         runLvl2();
         historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     case 3:
+        spawnTimeInterval=750;
         runLvl3();
         historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_3.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
@@ -467,10 +471,10 @@ void Game::onSpawn()
             stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
             break;
         case 3:
-            stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
+            stage->setAlienSpritePixmap(QPixmap(":/AlienShip_Lvl2.png"));
             break;
         case 4:
-            stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
+            stage->setAlienSpritePixmap(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
     stage->onSpawn(gameScene);
@@ -487,7 +491,7 @@ void Game::onSpawnArcade()
             stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
             break;
         case 2:
-            stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
+            stage->setAlienSpritePixmap(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
     stage->onSpawn(gameScene);

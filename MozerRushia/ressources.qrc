@@ -1,22 +1,26 @@
 <RCC>
     <qresource prefix="/">
-        <file>PlayerRocket.png</file>
-        <file>PlayerRocket_Left.png</file>
-        <file>PlayerRocket_Right.png</file>
-        <file>AlienRocket.png</file>
+        <file>mainTheme.wav</file>
+        <file>BackGround_Lvl2.jpg</file>
+        <file>BackGround_Lvl3.jpg</file>
+        <file>Fond_Game.jpg</file>
         <file>AlienShip.png</file>
+        <file>AlienShip_Lvl2.png</file>
+        <file>AmericanShuttle_Lvl.png</file>
+        <file>AmericanShuttle_Nar.png</file>
         <file>Asteroid.png</file>
         <file>Asteroid2.png</file>
-        <file>SovietBullet.png</file>
-        <file>Icone.png</file>
-        <file>Fond_Game.jpg</file>
-        <file>mainTheme.wav</file>
-        <file>Fond_Menu.png</file>
-        <file>GameOver.png</file>
-        <file>Narration_Test.png</file>
-        <file>Seamless_Background.png</file>
         <file>Drop_Life.png</file>
         <file>Drop_Weapon_Down.png</file>
         <file>Drop_Weapon_Up.png</file>
+        <file>Fond_Menu.png</file>
+        <file>GameOver.png</file>
+        <file>Icone.png</file>
+        <file>Narration_Test.png</file>
+        <file>PlayerRocket.png</file>
+        <file>PlayerRocket_Left.png</file>
+        <file>PlayerRocket_Right.png</file>
+        <file>Seamless_Background.png</file>
+        <file>SovietBullet.png</file>
     </qresource>
 </RCC>

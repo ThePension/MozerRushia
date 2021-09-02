@@ -65,6 +65,7 @@ private:
     int currentLvl=lvl;
     int hitCount=0;
     int hitLive=gMaxHealth;
+    int spawnTimeInterval = 3000;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
