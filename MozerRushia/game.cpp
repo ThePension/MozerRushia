@@ -160,7 +160,11 @@ void Game::runLvl2()
     run();
     HUDMan->setScore(hitCount*50,hitLive);
     rotateView(90);
+    HUDMan->setRotation(-90);
+    HUDMan->rotation();
     gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+    HUDMan->setPos(50,screenSize->width()-50);
+    HUDMan->pos();
     player->setPos(height() / 2, width() - spaceShipSize.height());
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
@@ -173,10 +177,15 @@ void Game::runLvl3()
     run();
     HUDMan->setScore(hitCount*50, hitLive);
     rotateView(180);
+    HUDMan->setRotation(-180);
+    HUDMan->rotation();
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    HUDMan->setPos(screenSize->width()-50,screenSize->height()-50);
+    HUDMan->pos();
     QPixmap bgPixmap = QPixmap(":/Fond_Game.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    currentLvl+=1;
 }
 
 void Game::runArcade()
@@ -443,6 +452,18 @@ void Game::onArcadeModeBackgroundScrolling()
 
 void Game::onSpawn()
 {
+    switch (currentLvl)
+    {
+        case 2:
+            stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
+            break;
+        case 3:
+            stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
+            break;
+        case 4:
+            stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
+            break;
+    }
     stage->onSpawn(gameScene);
 }
 
