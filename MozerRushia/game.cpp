@@ -245,19 +245,22 @@ void Game::runArcade()
 
     // Stages creation
     stage = new Stage(moveTimer, QPixmap(":/Asteroid.png"));
-    int spawnTimeInterval = 3000;
+    int spawnTimeInterval = 1000;
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
     // Difficulty management
     QTimer * difficulty = new QTimer();
     difficulty->start(10000); // Increase the number of aliens by 1 every 10 seconds
+
     connect(difficulty, &QTimer::timeout, [spawnTimeInterval, this]() mutable {
         // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
-        if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
-        else spawnTimeInterval = 500;
-        spawnTimer->stop();
-        spawnTimer->start(spawnTimeInterval);
+        if(moveTimer->isActive()){
+            if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
+            else spawnTimeInterval = 500;
+            spawnTimer->stop();
+            spawnTimer->start(spawnTimeInterval);
+        }
     });
 
     // HUD Display
