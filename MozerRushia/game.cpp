@@ -122,13 +122,6 @@ void Game::run()
     spawnTimer->start(3000);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
-    // Rotate view
-    /*
-    QTransform transform;
-    transform.rotate(90);
-    setTransform(transform);
-    */
-
     // HUD Display //peut etre lié au niveau et pas générique finalement
     HUDMan=new HUD(nullptr);
     scene()->addItem(HUDMan); //Pourquoi scene et pas gameScene ?
@@ -176,6 +169,8 @@ void Game::runLvl3()
 
 void Game::runArcade()
 {
+    mainMenuScene->scoreText->hide();
+
     // Changing for the scene game
     setScene(gameScene);
 
@@ -301,7 +296,6 @@ void Game::CheckPoints()
 {
     if (hitLive <=0)
     {
-        hitCount=0;
         hitLive=3;
         HUDMan->reset();
         onGameOver();
@@ -352,6 +346,26 @@ void Game::onGameOver()
 
     moveTimer->stop();
     spawnTimer->stop();
+
+    // Display the score
+    mainMenuScene->scoreText->show();
+    QTextDocument * oldDocument = mainMenuScene->scoreText->document();
+    delete oldDocument;
+    oldDocument = nullptr;
+    QTextDocument * document = new QTextDocument();
+    QTextCharFormat charFormat;
+    charFormat.setFont(QFont("", 50, QFont::Bold));
+    QPen outlinePen = QPen(Qt::black, 2, Qt::SolidLine);
+    charFormat.setTextOutline(outlinePen);
+    QTextCursor cursor = QTextCursor(document);
+    cursor.clearSelection();
+    cursor.insertText("Score : " + QString::number(hitCount*50), charFormat);
+    mainMenuScene->scoreText->setDocument(document);
+
+    // Reset the score
+    hitCount = 0;
+
+    // Clear the game scene
     gameScene->clear();
 }
 //ajouter un autre gameover (pour histoire afin de recommencer au début du jeu)

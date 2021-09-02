@@ -27,6 +27,24 @@ MainMenu::MainMenu(QObject * parent, QSize * screenSize) : QGraphicsScene(parent
     this->addWidget(quitButton);
     quitButton->show();
 
+    // Creation score text item
+    scoreText = new QGraphicsTextItem("Score : ", nullptr);
+    QFont scoreFont("", 50, QFont::Bold);
+    scoreText->setDefaultTextColor(Qt::white);
+    scoreText->setPos(width() / 2 - 200, 100);
+    this->addItem(scoreText);
+    scoreText->hide();
+
+    // For the outlined text
+    scoreTextDocument = new QTextDocument();
+    QTextCharFormat charFormat;
+    charFormat.setFont(scoreFont);
+    QPen outlinePen = QPen(Qt::black, 2, Qt::SolidLine);
+    charFormat.setTextOutline(outlinePen);
+    QTextCursor cursor = QTextCursor(scoreTextDocument);
+    cursor.insertText("Score : ", charFormat);
+    scoreText->setDocument(scoreTextDocument);
+
     // Menu background image
     this->setBackgroundBrush(QPixmap(":/Fond_Menu.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
@@ -40,4 +58,8 @@ MainMenu::~MainMenu()
     playArcadeButton = nullptr;
     delete playHistoryButton;
     playHistoryButton = nullptr;
+    delete scoreText;
+    scoreText = nullptr;
+    delete scoreTextDocument;
+    scoreTextDocument = nullptr;
 }

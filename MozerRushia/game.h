@@ -4,7 +4,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QPushButton>
-#include <QGraphicsBlurEffect>
+#include <QTextCursor>
 
 #include "player.h"
 #include "settings.h"
