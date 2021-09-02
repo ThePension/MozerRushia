@@ -20,7 +20,8 @@ public:
 
 signals:
     void sigAlienCollision();
-
+private:
+    QTimer *timer;
 private slots :
     void onMove();
 };

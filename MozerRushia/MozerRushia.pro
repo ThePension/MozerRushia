@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     alien.cpp \
     bullet.cpp \
+    drop.cpp \
     game.cpp \
     hud.cpp \
     main.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 HEADERS += \
     alien.h \
     bullet.h \
+    drop.h \
     game.h \
     hud.h \
     mainmenu.h \

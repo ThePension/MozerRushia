@@ -8,10 +8,9 @@
 #include "settings.h"
 #include "weapon.h"
 
-class SpaceShip : public QObject, public QGraphicsPixmapItem
+ class SpaceShip : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
-
 public:
     SpaceShip(QPixmap sprite, QGraphicsItem * parent, QTimer * timer);
     int HP = 3;

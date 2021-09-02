@@ -15,5 +15,8 @@
         <file>GameOver.png</file>
         <file>Narration_Test.png</file>
         <file>Seamless_Background.png</file>
+        <file>Drop_Life.png</file>
+        <file>Drop_Weapon_Down.png</file>
+        <file>Drop_Weapon_Up.png</file>
     </qresource>
 </RCC>
