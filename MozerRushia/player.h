@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include "spaceship.h"
+#include "alien.h"
+#include "drop.h"
 
 class Player : public SpaceShip
 {
@@ -11,7 +13,8 @@ public:
     ~Player();
 
 signals:
-    void sigAlienRocketCollision();
+    void sigAlienPlayerCollision(Alien*);
+    void sigDropPlayerCollision(Drop*);
 
 public slots:
     void onMove();

@@ -24,6 +24,8 @@ void HUD::increaseScore()
     setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(my_Score));
 }
 
+
+
 void HUD::decreaseHealth()
 {
     my_Health --;

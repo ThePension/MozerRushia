@@ -12,6 +12,8 @@ public:
     ~Drop();
     int speed;
     int type;
+signals:
+    void sigDropOutOfRange(Drop *);
 
 private slots :
     void onMove();

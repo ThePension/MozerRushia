@@ -1,5 +1,6 @@
 #include "player.h"
 #include "alien.h"
+#include "drop.h"
 #include <QTimer>
 #include <QGraphicsScene>
 Player::Player(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent, timer)
@@ -37,11 +38,17 @@ void Player::onMove()
         Alien* pAlien = dynamic_cast<Alien*>(pItem);
         if(pAlien != nullptr)
         {
-            scene()->removeItem(pAlien);
-            delete(pAlien);
-
-            emit sigAlienRocketCollision();
+            emit sigAlienPlayerCollision(pAlien);
         }
     }
+    for(auto const pItem : firstCollidingItem)
+    {
+        Drop* pDrop = dynamic_cast<Drop*>(pItem);
+        if(pDrop != nullptr)
+        {
+            emit sigDropPlayerCollision(pDrop);
+        }
+    }
+
 }
 

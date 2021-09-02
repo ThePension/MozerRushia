@@ -15,12 +15,20 @@ Alien::~Alien()
 
 void Alien::onMove()
 {
+   /* QList<QGraphicsItem*> firstCollidingItem = collidingItems();
+    for(auto const pItem : firstCollidingItem)
+    {
+        Bullet* pBullet = dynamic_cast<Bullet*>(pItem);
+        if(pBullet != nullptr)
+        {
+            emit sigAlienBulletCollision(this, pBullet);
+        }
+    }*/
+
     setPos(x(), y() + speed);
 
     if(pos().y() > scene()->height())
     {
-        scene()->removeItem(this);
-        emit sigAlienOutOfRange();
-        delete this;
+        emit sigAlienOutOfRange(this);
     }
 }
