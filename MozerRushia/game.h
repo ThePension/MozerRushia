@@ -77,7 +77,7 @@ private:
     int currentLvl=1;
     int hitCount=0;
     int hitLive=gMaxHealth;
-    int spawnTimeInterval = 3000;
+    int spawnTimeInterval = 1000;
     int currentNarationStep = 1;
 
 protected:

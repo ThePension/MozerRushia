@@ -349,7 +349,7 @@ void Game::keyPressEvent(QKeyEvent *e)
                     }
                 }
                 break;
-            case Qt::Key_Q:
+            /*case Qt::Key_Q:
                 if(moveTimer != nullptr && moveTimer->isActive()){
                     if(player->currentWeapon->weaponNumber >= 3){
                         player->currentWeapon->weaponNumber -= 2;
@@ -361,7 +361,7 @@ void Game::keyPressEvent(QKeyEvent *e)
                     if(player->currentWeapon->weaponNumber <= 21){
                         player->currentWeapon->weaponNumber += 2;
                     }
-                }
+                }*/
                 break;
         }
 }
@@ -803,7 +803,7 @@ void Game::onBackgroundScrolling()
         // Show cursor
         QApplication::setOverrideCursor(Qt::ArrowCursor);
     }else{
-        qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
+        qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
     }
 }
 

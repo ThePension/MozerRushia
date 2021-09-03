@@ -21,8 +21,8 @@ int const dropSpeed = 3;
 int const arcadeAlienSpeed = 2;
 int const arcadeAsteroidSpeed = 1;
 int const arcadeShuttleSpeed = 3;
-int const storyAlienSpeed = 4;
+int const storyAlienSpeed = 8;
 int const storyAsteroidSpeed = 2;
-int const storyShuttleSpeed = 3;
+int const storyShuttleSpeed = 4;
 
 #endif // SETTINGS_H
