@@ -135,8 +135,10 @@ void Game::run()
     gameScene->addItem(player);
     connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision);
     connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
+
 
     // Stages creation
     stage = new Stage(moveTimer);
@@ -262,7 +264,7 @@ void Game::runArcade()
     HUDMan=new HUD(nullptr);
     gameScene->addItem(HUDMan);
     HUDMan->show();
-    connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
+    //connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
     //connect(player, &Player::sigAlienPlayerCollision, this, &Game::onDecreaseHealth);
     //connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
     //connect(player, &Player::sigIncreaseHealth, this, &Game::onIncreaseHealth);
@@ -378,9 +380,9 @@ void Game::decreaseHealth()
 
 void Game::onAlienPlayerCollision(Alien* pAlien)
 {
-    decreaseHealth();
     scene()->removeItem(pAlien);
     delete pAlien;
+    decreaseHealth();
 }
 
 void Game::onDropPlayerCollision(Drop* pDrop)
@@ -411,6 +413,7 @@ void Game::onAlienBulletCollision(Alien* pAlien, Bullet* pBullet)
         pDrop->setPos(pAlien->pos());
         scene()->addItem(pDrop);
     }
+    onIncreaseScore();
     scene()->removeItem(pAlien);
     scene()->removeItem(pBullet);
     delete pAlien;
@@ -419,9 +422,10 @@ void Game::onAlienBulletCollision(Alien* pAlien, Bullet* pBullet)
 
 void Game::onAlienOutOfRange(Alien* pAlien)
 {
-    decreaseHealth();
+    //decreaseHealth();
     scene()->removeItem(pAlien);
     delete pAlien;
+    decreaseHealth();
 }
 
 void Game::onBulletOutOfRange(Bullet* pBullet)
