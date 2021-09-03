@@ -20,26 +20,25 @@ class Game : public QGraphicsView
 public:
     Game(QWidget * parent = 0, QSize * screenSize = 0);
     void displayMainMenu();
-    void run();
-    void runLvl1();
-    void runLvl2();
-    void runLvl3();
-    void runNarr1();
-    void runNarr2();
-    void runNarr3();
-    void runNarr4();
+    void runHistory();
+    void runNarration1();
+    void runNarration2();
+    void runNarration3();
+    void runNarration4();
     void runArcade();
     void rotateView(int rotationDegree);
     void pauseTheGame();
     void resumeTheGame();
+    void runLevel1();
+    void runLevel2();
+    void runLevel3();
+    void clearGameScene();
 signals:
     void sigPlayerShoot(); // The Player shot a Bullet
 
 public slots:
-    void onChangeLevel();
     void onBackgroundScrolling();
     void onArcadeModeBackgroundScrolling();
-    void onNarrationScrolling();
     void onSpawn();
     void onSpawnArcade();
     void onBackToMainMenu();
@@ -59,17 +58,14 @@ private:
 
     void increaseScore();
 
-    Player * player;
+    Player * player = nullptr;
     QTimer * moveTimer = nullptr;
-    QTimer * narTimer = nullptr;
     MainMenu * mainMenuScene;
     MenuButton * nxtLvl = nullptr;
     QGraphicsScene * gameScene;
-    QGraphicsScene * narrationScene;
     QGraphicsScene * historyScene;
     GameOverMenu * gameOverMenu;
     HUD* HUDMan = nullptr;
-    QGraphicsPixmapItem * qScrollingNar;
     QGraphicsPixmapItem * qScrollingBg;
     QGraphicsPixmapItem * qScrollingBg2 = nullptr;
     QSize * screenSize;
@@ -78,10 +74,11 @@ private:
     MenuButton * resumeButton;
     MenuButton * quitButton;
     MenuButton * backToMenuButton;
-    int currentLvl=lvl;
+    int currentLvl=1;
     int hitCount=0;
     int hitLive=gMaxHealth;
     int spawnTimeInterval = 3000;
+    int currentNarationStep = 1;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;

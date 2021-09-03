@@ -22,10 +22,27 @@
         <file>Seamless_Background.png</file>
         <file>SovietBullet.png</file>
         <file>BackGround_Lvl1.jpg</file>
-        <file>Narration2.jpg</file>
-        <file>Narration3.jpg</file>
-        <file>Narration4.jpg</file>
         <file>AmericanBullet.png</file>
-        <file>Narration1.png</file>
+        <file>Narration_A1.png</file>
+        <file>Narration_A2.png</file>
+        <file>Narration_A3.png</file>
+        <file>Narration_A4.png</file>
+        <file>Narration_A5.png</file>
+        <file>Narration_A6.png</file>
+        <file>Narration_A7.png</file>
+        <file>Narration_A8.png</file>
+        <file>Narration_A9.png</file>
+        <file>Narration_B1.png</file>
+        <file>Narration_B2.png</file>
+        <file>Narration_B3.png</file>
+        <file>Narration_C1.png</file>
+        <file>Narration_C2.png</file>
+        <file>Narration_C3.png</file>
+        <file>Narration_C4.png</file>
+        <file>Narration_C5.png</file>
+        <file>Narration_C6.png</file>
+        <file>Narration_D1.png</file>
+        <file>Narration_D2.png</file>
+        <file>Narration_D3.png</file>
     </qresource>
 </RCC>

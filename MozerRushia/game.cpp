@@ -28,14 +28,9 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     mainMenuScene = new MainMenu(this, screenSize);
     mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
 
-    // Creation narration Scene
-    narrationScene = new QGraphicsScene(this);
-    narrationScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-
     // Creation history Scene
     historyScene = new QGraphicsScene(this);
     historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    historyScene->setBackgroundBrush(QPixmap(":/Narration1.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
     // Creation game over scene
     gameOverMenu = new GameOverMenu(this, screenSize);
@@ -47,7 +42,7 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 void Game::displayMainMenu(){
     // Connect menu's buttons
     connect(mainMenuScene->playArcadeButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
-    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::onChangeLevel, Qt::UniqueConnection);
+    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::runHistory, Qt::UniqueConnection);
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
 
     // Set the scene with mainMenu scene
@@ -55,161 +50,169 @@ void Game::displayMainMenu(){
 
     // Music theme
     // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-    /*QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+    /*
+    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
     QFile::copy(":/mainTheme.wav", path);
-    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);*/
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+    */
 }
 
-void Game::run()
+void Game::runHistory()
 {
-    // Hide cursor
-    QApplication::setOverrideCursor(Qt::BlankCursor);
+    // Clear history scene
+    historyScene->clear();
 
-    // Reset scene rect
-    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    gameScene->clear();
-    this->viewport()->update();
-
-    // Timers creations
-    spawnTimer = new QTimer();
-    moveTimer = new QTimer();
+    // Change scene for history scene
+    setScene(historyScene);
 
     // Replay button connection
-    connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
+    connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::runHistory, Qt::UniqueConnection);
 
-    // Changing for the scene game
-    setScene(gameScene);
+    // Create next button
+    nxtLvl = new MenuButton(this);
+    nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    nxtLvl->setText("Continuer");
+    nxtLvl->show();
 
-    // Creation resume button for pause menu
-    resumeButton = new MenuButton(this);
-    resumeButton->setText("Continuer");
-    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
-    gameScene->addWidget(resumeButton);
-    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame, Qt::UniqueConnection);
-
-    // Creation quit button for pause menu
-    quitButton = new MenuButton(this);
-    quitButton->setText("Quitter le jeu");
-    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
-    gameScene->addWidget(quitButton);
-    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
-
-    // Creation back to menu button for pause menu
-    backToMenuButton = new MenuButton(this);
-    backToMenuButton->setText("Menu principal");
-    backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
-    gameScene->addWidget(backToMenuButton);
-    connect(backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
-
-    // Background image
-    qScrollingBg = new QGraphicsPixmapItem();
-    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl1.jpg").scaledToWidth(gameScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
-    gameScene->addItem(qScrollingBg);
-
-    // Main timer
-    moveTimer->start(1000/FPS);
-
-    // Player creation
-    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
-    player->setPos(width() / 2, height() - spaceShipSize.height());
-    gameScene->addItem(player);
-    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision);
-    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
-    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
-    // Connection for player movements
-    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
-
-    spawnTimer->start(spawnTimeInterval);
-    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
-
-    // HUD Display //peut etre lié au niveau et pas générique finalement
-    HUDMan=new HUD(nullptr);
-    scene()->addItem(HUDMan); //Pourquoi scene et pas gameScene ?
-    HUDMan->show();
-
-    // Scrolling background connection
-    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
+    // Naration level 1
+    runNarration1();
 }
 
-void Game::runLvl1()
+void Game::runNarration1()
 {
-    run();
-    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl1.jpg").scaledToWidth(gameScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
-    currentLvl+=1;
+    connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration1, Qt::UniqueConnection);
+    switch (currentNarationStep) {
+        case 1:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A1.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 2:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A2.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 3:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 4:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A4.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 5:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A5.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 6:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A6.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 7:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A7.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 8:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A8.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 9:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_A9.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 10:
+            runLevel1();
+            currentNarationStep = 0;
+            break;
+    }
+    currentNarationStep++;
 }
 
-void Game::runLvl2()
+void Game::runNarration2()
 {
-    run();
-    HUDMan->setScore(hitCount*50,hitLive);
-    rotateView(90);
-    HUDMan->setRotation(-90);
-    HUDMan->rotation();
-    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
-    HUDMan->setPos(50,screenSize->width()-50);
-    HUDMan->pos();
-    player->setPos(height() / 2, width() - spaceShipSize.height());
-    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl2.jpg").scaledToWidth(gameScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
-    currentLvl+=1;
+    delete nxtLvl;
+    nxtLvl = new MenuButton(this);
+    nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    nxtLvl->setText("Continuer");
+    nxtLvl->show();
+    connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration2, Qt::UniqueConnection);
+    setScene(historyScene);
+
+    switch (currentNarationStep) {
+        case 1:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_B1.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 2:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_B2.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 3:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_B3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 4:
+            runLevel2();
+            currentNarationStep = 0;
+            break;
+    }
+    currentNarationStep++;
 }
 
-void Game::runLvl3()
+void Game::runNarration3()
 {
-    run();
-    HUDMan->setScore(hitCount*50, hitLive);
-    rotateView(180);
-    HUDMan->setRotation(-180);
-    HUDMan->rotation();
-    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    HUDMan->setPos(screenSize->width()-50,screenSize->height()-50);
-    HUDMan->pos();
-    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl3.jpg").scaledToWidth(gameScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
-    currentLvl+=1;
+    delete nxtLvl;
+    nxtLvl = new MenuButton(this);
+    nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    nxtLvl->setText("Continuer");
+    nxtLvl->show();
+    connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration3, Qt::UniqueConnection);
+    setScene(historyScene);
+
+    switch (currentNarationStep) {
+        case 1:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C1.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 2:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C2.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 3:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 4:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C4.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 5:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C5.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 6:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_C6.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 7:
+            runLevel3();
+            currentNarationStep = 0;
+            break;
+    }
+    currentNarationStep++;
 }
 
-void Game::runNarr1()
+void Game::runNarration4()
 {
-    narTimer = new QTimer();
-    narTimer->start(1000/FPS);
-    qScrollingNar = new QGraphicsPixmapItem;
-    QPixmap bgPixmap = QPixmap(":/Narration1.jpg").scaledToWidth(narrationScene->width());
-    qScrollingNar->setPixmap(bgPixmap);
-    qScrollingNar->setPos(0,0);
-    narrationScene->addItem(qScrollingNar);
-    // connect(narTimer, &QTimer::timeout, this, &Game::onNarrationScrolling, Qt::UniqueConnection);
-    setScene(narrationScene);
-}
+    delete nxtLvl;
+    nxtLvl = new MenuButton(this);
+    nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
+    historyScene->addWidget(nxtLvl);
+    nxtLvl->setText("Continuer");
+    nxtLvl->show();
+    connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration4, Qt::UniqueConnection);
+    setScene(historyScene);
 
-void Game::runNarr2()
-{
-    run();
-    QPixmap bgPixmap = QPixmap(":/Narration3.jpg").scaledToWidth(historyScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0,0);
-}
-
-void Game::runNarr3()
-{
-    run();
-    QPixmap bgPixmap = QPixmap(":/Narration4.jpg").scaledToWidth(historyScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, 0);
-}
-
-void Game::runNarr4()
-{
-    run();
-    QPixmap bgPixmap = QPixmap(":/Narration5.jpg").scaledToWidth(historyScene->width());
-    qScrollingBg->setPixmap(bgPixmap);
-    qScrollingBg->setPos(0, 0);
+    switch (currentNarationStep) {
+        case 1:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_D1.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 2:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_D2.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 3:
+            historyScene->setBackgroundBrush(QPixmap(":/Narration_D3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            break;
+        case 4:
+            QApplication::quit();
+            currentNarationStep = 1;
+            return;
+            break;
+    }
+    currentNarationStep++;
 }
 
 void Game::runArcade()
@@ -392,6 +395,215 @@ void Game::resumeTheGame()
     QApplication::setOverrideCursor(Qt::BlankCursor);
 }
 
+void Game::runLevel1()
+{
+    // Hide change level button
+    nxtLvl->hide();
+
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+
+    // Reset scene rect
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    gameScene->clear();
+    this->viewport()->update();
+
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
+    // Replay button connection
+    connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::runHistory, Qt::UniqueConnection);
+
+    // Changing for the scene game
+    setScene(gameScene);
+
+    // Creation resume button for pause menu
+    resumeButton = new MenuButton(this);
+    resumeButton->setText("Continuer");
+    resumeButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
+    gameScene->addWidget(resumeButton);
+    connect(resumeButton, &MenuButton::clicked, this, &Game::resumeTheGame, Qt::UniqueConnection);
+
+    // Creation quit button for pause menu
+    quitButton = new MenuButton(this);
+    quitButton->setText("Quitter le jeu");
+    quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
+    gameScene->addWidget(quitButton);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
+
+    // Creation back to menu button for pause menu
+    backToMenuButton = new MenuButton(this);
+    backToMenuButton->setText("Menu principal");
+    backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
+    gameScene->addWidget(backToMenuButton);
+    connect(backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
+
+    // Background image
+    qScrollingBg = new QGraphicsPixmapItem();
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl1.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    gameScene->addItem(qScrollingBg);
+
+    // Main timer
+    moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
+    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision);
+    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
+    // Connection for player movements
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
+
+    spawnTimer->start(spawnTimeInterval);
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
+
+    HUDMan=new HUD(nullptr);
+    gameScene->addItem(HUDMan);
+    HUDMan->show();
+
+    // Scrolling background connection
+    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
+}
+
+void Game::runLevel2()
+{
+    clearGameScene();
+
+    // Hide change level button
+    nxtLvl->hide();
+
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
+    // Changing for the scene game
+    setScene(gameScene);
+
+    // Background image
+    qScrollingBg = new QGraphicsPixmapItem();
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl2.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    gameScene->addItem(qScrollingBg);
+
+    // Main timer
+    moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
+    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision, Qt::UniqueConnection);
+    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
+
+    // Connection for player movements
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
+
+    spawnTimer->start(spawnTimeInterval);
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
+
+    HUDMan=new HUD(nullptr);
+    gameScene->addItem(HUDMan);
+    HUDMan->show();
+
+    // Change view orientation and position of elements
+    HUDMan->setScore(hitCount*50,hitLive);
+    rotateView(90);
+    HUDMan->setRotation(-90);
+    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+    HUDMan->setPos(50,screenSize->width()-50);
+    player->setPos(height() / 2, width() - spaceShipSize.height());
+
+    // Scrolling background connection
+    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
+}
+
+void Game::runLevel3()
+{
+    clearGameScene();
+
+    // Hide change level button
+    nxtLvl->hide();
+
+    // Hide cursor
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+
+    // Timers creations
+    spawnTimer = new QTimer();
+    moveTimer = new QTimer();
+
+    // Changing for the scene game
+    setScene(gameScene);
+    gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
+    // Background image
+    qScrollingBg = new QGraphicsPixmapItem();
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl3.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
+    gameScene->addItem(qScrollingBg);
+
+    // Main timer
+    moveTimer->start(1000/FPS);
+
+    // Player creation
+    player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
+    player->setPos(width() / 2, height() - spaceShipSize.height());
+    gameScene->addItem(player);
+    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision, Qt::UniqueConnection);
+    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
+
+    // Connection for player movements
+    connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
+
+    spawnTimer->start(spawnTimeInterval);
+    connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
+
+    HUDMan=new HUD(nullptr);
+    gameScene->addItem(HUDMan);
+    HUDMan->show();
+
+    // Change view orientation and position of elements
+    HUDMan->setScore(hitCount*50,hitLive);
+    rotateView(180);
+    HUDMan->setRotation(-180);
+
+    HUDMan->setPos(screenSize->width()-50,screenSize->height()-50);
+
+    // Scrolling background connection
+    connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
+}
+
+void Game::clearGameScene()
+{
+    // Delete timers
+    moveTimer->stop();
+    delete moveTimer;
+    moveTimer = nullptr;
+    spawnTimer->stop();
+    delete spawnTimer;
+    spawnTimer = nullptr;
+    if(difficultyTimer != nullptr) {
+        difficultyTimer->stop();
+        delete difficultyTimer;
+        difficultyTimer = nullptr;
+    }
+
+    // Reset the view if it was rotated
+    this->resetTransform();
+    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+}
+
 void Game::increaseScore()
 {
     hitCount+=1;
@@ -555,69 +767,6 @@ void Game::gameOver()
     // Show cursor
     QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
-//ajouter un autre gameover (pour histoire afin de recommencer au début du jeu)
-void Game::onChangeLevel()
-{
-    switch (currentLvl)
-    {
-    case 0:
-
-        //next level button
-        nxtLvl = new MenuButton(nullptr);
-        nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
-        historyScene->addWidget(nxtLvl);
-        nxtLvl->setText("Continuer");
-        connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
-
-        historyScene->setBackgroundBrush(QPixmap(":/Narration1.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        setScene(historyScene);
-        //setScene(gameScene);
-        QApplication::setOverrideCursor(Qt::ArrowCursor);
-
-        currentLvl++;
-        break;
-    case 1:
-        runNarr1();
-        //historyScene->setBackgroundBrush(QPixmap(":/Narration2.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        setScene(historyScene);
-        currentLvl++;
-        break;
-    case 2:
-        spawnTimeInterval=1500;
-        runLvl1();
-        //setScene(gameScene);
-        break;
-    case 3:
-        //runNarr2();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration3.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        currentLvl++;
-        break;
-    case 4:
-        spawnTimeInterval=500;
-        runLvl2();
-        break;
-    case 5:
-        //runNarr3();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration4.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        currentLvl++;
-        break;
-    case 6:
-        spawnTimeInterval=750;
-        runLvl3();
-        break;
-    case 7:
-        //rotateView(180);
-        nxtLvl->setText("Finir");
-        connect(nxtLvl,&MenuButton::clicked,this,/*&Game::onBackToMainMenu*/ &QApplication::quit , Qt::UniqueConnection);
-        //runNarr4();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration5.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        break;
-    default:
-        runLvl1();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        break;
-    }
-}
 
 void Game::onBackgroundScrolling()
 {
@@ -631,7 +780,19 @@ void Game::onBackgroundScrolling()
         }
 
         this->resetTransform();
-        setScene(historyScene);
+        switch (currentLvl) {
+            case 1:
+                runNarration2();
+                break;
+            case 2:
+                runNarration3();
+                break;
+            case 3:
+                runNarration4();
+                break;
+        }
+
+        currentLvl++;
 
         moveTimer->stop();
 
@@ -657,22 +818,18 @@ void Game::onArcadeModeBackgroundScrolling()
     }
 }
 
-void Game::onNarrationScrolling()
-{
-    qScrollingNar->setPos(qScrollingNar->pos().x(), qScrollingNar->pos().y() - 1);
-}
 
 void Game::onSpawn()
 {
     switch (currentLvl)
     {
-        case 2:
+        case 1:
             spawnAlien(QPixmap(":/Asteroid.png"));
             break;
-        case 4:
+        case 2:
             spawnAlien(QPixmap(":/AlienShip_Lvl2.png"));
             break;
-        case 6:
+        case 3:
             spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
@@ -695,14 +852,13 @@ void Game::onSpawnArcade()
             //stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
             break;
     }
-    //stage->onSpawn(gameScene);
 }
 
 void Game::spawnAlien(QPixmap sprite)
 {
     Alien *pAlien = new Alien(sprite, nullptr, moveTimer);
-    int posX = rand() % int(scene()->width() - alienSize.width());
-    scene()->addItem(pAlien);
+    int posX = rand() % int(gameScene->width() - alienSize.width());
+    gameScene->addItem(pAlien);
     pAlien->setPos(posX, -alienSize.height());
     connect(pAlien, &Alien::sigAlienOutOfRange, this, &Game::onAlienOutOfRange);
 }
