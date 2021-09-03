@@ -39,6 +39,7 @@ public slots:
     void onChangeLevel();
     void onBackgroundScrolling();
     void onArcadeModeBackgroundScrolling();
+    void onNarrationScrolling();
     void onSpawn();
     void onSpawnArcade();
     void onBackToMainMenu();
@@ -60,6 +61,7 @@ private:
 
     Player * player;
     QTimer * moveTimer = nullptr;
+    QTimer * narTimer = nullptr;
     MainMenu * mainMenuScene;
     MenuButton * nxtLvl = nullptr;
     QGraphicsScene * gameScene;

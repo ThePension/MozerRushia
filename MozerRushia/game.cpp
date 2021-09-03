@@ -177,11 +177,15 @@ void Game::runLvl3()
 
 void Game::runNarr1()
 {
-    qScrollingNar=new QGraphicsPixmapItem;
+    narTimer = new QTimer();
+    narTimer->start(1000/FPS);
+    qScrollingNar = new QGraphicsPixmapItem;
     QPixmap bgPixmap = QPixmap(":/Narration1.jpg").scaledToWidth(narrationScene->width());
     qScrollingNar->setPixmap(bgPixmap);
     qScrollingNar->setPos(0,0);
     narrationScene->addItem(qScrollingNar);
+    // connect(narTimer, &QTimer::timeout, this, &Game::onNarrationScrolling, Qt::UniqueConnection);
+    setScene(narrationScene);
 }
 
 void Game::runNarr2()
@@ -573,9 +577,9 @@ void Game::onChangeLevel()
         currentLvl++;
         break;
     case 1:
-        //runNarr1();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration2.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        //setScene(narrationScene);
+        runNarr1();
+        //historyScene->setBackgroundBrush(QPixmap(":/Narration2.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        setScene(historyScene);
         currentLvl++;
         break;
     case 2:
@@ -604,7 +608,7 @@ void Game::onChangeLevel()
     case 7:
         //rotateView(180);
         nxtLvl->setText("Finir");
-        connect(nxtLvl,&MenuButton::clicked,this,&Game::onBackToMainMenu, Qt::UniqueConnection);
+        connect(nxtLvl,&MenuButton::clicked,this,/*&Game::onBackToMainMenu*/ &QApplication::quit , Qt::UniqueConnection);
         //runNarr4();
         historyScene->setBackgroundBrush(QPixmap(":/Narration5.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
@@ -636,11 +640,7 @@ void Game::onBackgroundScrolling()
         // Show cursor
         QApplication::setOverrideCursor(Qt::ArrowCursor);
     }else{
-        if(currentLvl%2!=0)
-            qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
-        else
-            qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() - 1);
-
+        qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
     }
 }
 
@@ -655,6 +655,11 @@ void Game::onArcadeModeBackgroundScrolling()
     else if(qScrollingBg2->pos().y() >= screenSize->height()){
         qScrollingBg2->setPos(0, -qScrollingBg2->pixmap().size().height());
     }
+}
+
+void Game::onNarrationScrolling()
+{
+    qScrollingNar->setPos(qScrollingNar->pos().x(), qScrollingNar->pos().y() - 1);
 }
 
 void Game::onSpawn()
