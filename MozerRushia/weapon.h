@@ -1,7 +1,6 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include<QGraphicsScene>
 #include<QGraphicsView>
 #include<QGraphicsPixmapItem>
 
@@ -13,23 +12,10 @@ class Weapon : public QObject, public QGraphicsPixmapItem
 
 public:
     Weapon(QGraphicsItem * parent, QTimer * timer);
-    void shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponNumber);
+
     int weaponNumber = 1;
-
-signals:
-    void sigScore();
-    void sigIncreaseHealth();
-
-public slots:
-    void onAlienCollision();
-    void onIncreaseHealth();
-
 private:
-    double cadence = 1;
-    int damage = 1;
-    int speed = 5;
     QTimer * moveTimer;
-    //enum weaponType;
 };
 
 #endif // WEAPON_H

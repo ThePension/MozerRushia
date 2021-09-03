@@ -21,7 +21,6 @@ public:
     MenuButton * quitButton;
     MenuButton * playArcadeButton;
     MenuButton * playHistoryButton;
-    // MenuButton * settingsButton;
 };
 
 #endif // MAINMENU_H

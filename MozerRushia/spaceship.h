@@ -12,7 +12,7 @@
 {
     Q_OBJECT
 public:
-    SpaceShip(QPixmap sprite, QGraphicsItem * parent, QTimer * timer);
+    SpaceShip(QPixmap sprite, QGraphicsItem * parent);
     int HP = 3;
     double speed = 10;
     Weapon * currentWeapon;

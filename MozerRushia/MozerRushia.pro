@@ -20,7 +20,6 @@ SOURCES += \
     menubutton.cpp \
     player.cpp \
     spaceship.cpp \
-    stage.cpp \
     weapon.cpp
 
 HEADERS += \
@@ -35,7 +34,6 @@ HEADERS += \
     player.h \
     settings.h \
     spaceship.h \
-    stage.h \
     weapon.h
 
 # Default rules for deployment.

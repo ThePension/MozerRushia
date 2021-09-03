@@ -11,7 +11,6 @@
 #include "settings.h"
 #include "hud.h"
 #include "mainmenu.h"
-#include "stage.h"
 #include "gameovermenu.h"
 #include "bullet.h"
 
@@ -27,25 +26,18 @@ public:
     void runLvl3();
     void runArcade();
     void rotateView(int rotationDegree);
-    void CheckPoints();
-    Player * getPlayer() { return player; }
-    QTimer * getMoveTimer() { return moveTimer; }
     void pauseTheGame();
     void resumeTheGame();
 signals:
     void sigPlayerShoot(); // The Player shot a Bullet
 
 public slots:
-    void onIncreaseScore();
-    //void onGameOver();
     void onChangeLevel();
     void onBackgroundScrolling();
     void onArcadeModeBackgroundScrolling();
     void onSpawn();
     void onSpawnArcade();
-
     void onBackToMainMenu();
-
     void onAlienPlayerCollision(Alien*); // An Alien got to the Player
     void onDropPlayerCollision(Drop*);  // A Drop got to the Player
     void onAlienBulletCollision(Alien*, Bullet*); // A Bullet got to an Alien
@@ -54,15 +46,14 @@ public slots:
     void onDropOutOfRange(Drop*); // A Drop went out of the screen
     void onPlayerShoot(); // The Player shot a Bullet
 
-
-
-
 private:
-    void onGameOver();
+    void gameOver();
     void decreaseHealth();
     void increaseHealth();
     void spawnAlien(QPixmap);
-    Stage * stage;
+
+    void increaseScore();
+
     Player * player;
     QTimer * moveTimer = nullptr;
     MainMenu * mainMenuScene;

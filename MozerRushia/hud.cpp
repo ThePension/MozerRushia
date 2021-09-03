@@ -18,33 +18,9 @@ HUD::~HUD()
 
 }
 
-void HUD::increaseScore()
-{
-    my_Score += 50;
-    setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(my_Score));
-}
-
-
-
-void HUD::decreaseHealth()
-{
-    my_Health --;
-    setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(getScore()));
-}
-
 void HUD::setScore(int newScore, int newHealth)
 {
     setPlainText(QString("Health : ")+QString::number(newHealth)+"\n"+QString("Score : ")+QString::number(newScore));
-}
-
-int HUD::getHealth() const
-{
-    return my_Health;
-}
-
-int HUD::getScore() const
-{
-    return my_Score;
 }
 
 void HUD::reset()

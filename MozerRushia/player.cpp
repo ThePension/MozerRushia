@@ -1,9 +1,8 @@
 #include "player.h"
-#include "alien.h"
-#include "drop.h"
 #include <QTimer>
 #include <QGraphicsScene>
-Player::Player(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent, timer)
+
+Player::Player(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent)
 {
     currentWeapon = new Weapon(this, timer);
 }

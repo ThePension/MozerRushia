@@ -1,7 +1,4 @@
 #include "bullet.h"
-#include "alien.h"
-#include "stage.h"
-#include "drop.h"
 
 Bullet::Bullet(QPixmap sprite, int speed, double offsetX, QGraphicsItem* parent, QTimer * moveTimer) : QGraphicsPixmapItem(parent)
 {

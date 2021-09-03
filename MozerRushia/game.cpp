@@ -1,7 +1,4 @@
 #include "game.h"
-#include "settings.h"
-#include "stage.h"
-#include "drop.h"
 #include <QPixmap>
 #include <QTimer>
 #include <QPushButton>
@@ -157,8 +154,7 @@ void Game::run()
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
 
-    // Stages creation
-    stage = new Stage(moveTimer);
+
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
@@ -276,8 +272,7 @@ void Game::runArcade()
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
-    // Stages creation
-    stage = new Stage(moveTimer, QPixmap(":/Asteroid.png"));
+
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
@@ -369,16 +364,6 @@ void Game::keyReleaseEvent(QKeyEvent *e)
         player->direction = Direction::any;
 }
 
-void Game::CheckPoints()
-{
-    if (hitLive <=0)
-    {
-        hitLive=3;
-        HUDMan->reset();
-        onGameOver();
-    }
-}
-
 void Game::pauseTheGame()
 {
     moveTimer->stop(); // Pause the game
@@ -401,7 +386,7 @@ void Game::resumeTheGame()
     QApplication::setOverrideCursor(Qt::BlankCursor);
 }
 
-void Game::onIncreaseScore()
+void Game::increaseScore()
 {
     hitCount+=1;
     HUDMan->setScore(hitCount*50, hitLive);
@@ -419,13 +404,11 @@ void Game::decreaseHealth()
 {
     hitLive-=1;
     HUDMan->setScore(hitCount*50, hitLive);
-    //CheckPoints();
     if (hitLive <=0)
     {
         hitLive=3;
-        onGameOver();
+        gameOver();
         HUDMan->reset();
-        //onGameOver();
     }
 }
 
@@ -465,11 +448,13 @@ void Game::onAlienBulletCollision(Alien* pAlien, Bullet* pBullet)
 
     if(rand() % 5 == 0) // 20% chances to spawn a drop
     {
-        Drop *pDrop = new Drop(pAlien->speed, nullptr, moveTimer);
+
+        Drop *pDrop = new Drop(dropSpeed, nullptr, moveTimer);
+        connect(pDrop, &Drop::sigDropOutOfRange, this, &Game::onDropOutOfRange);
         pDrop->setPos(pAlien->pos());
         gameScene->addItem(pDrop);
     }
-        onIncreaseScore();
+    increaseScore();
     gameScene->removeItem(pAlien);
     gameScene->removeItem(pBullet);
     delete pAlien;
@@ -502,21 +487,21 @@ void Game::onPlayerShoot()
     QPixmap bSprite(":/SovietBullet.png");
     Bullet *pBullet;
     int weaponNumber = player->currentWeapon->weaponNumber;
-    double angle = -0.25*weaponNumber;
+    double angle = -bulletAngle*(weaponNumber-1)/2;
     if(weaponNumber == 1)
     {angle = 0;}
     for(int i = 0; i < weaponNumber; i++)
     {
-        pBullet = new Bullet(bSprite, 5, angle, nullptr, moveTimer); //A voir pour charger le speed depuis les settings
-        pBullet->setPos(player->pos().x() + bulletSize.width() / 2, player->pos().y() - bulletSize.height() / 2);
+        pBullet = new Bullet(bSprite, bulletSpeed, angle, nullptr, moveTimer);
+        pBullet->setPos(player->pos().x() + spaceShipSize.width()/2 - bulletSize.width()/2, player->pos().y() - bulletSize.height() / 2);
         gameScene->addItem(pBullet);
         connect(pBullet, &Bullet::sigBulletOutOfRange, this, &Game::onBulletOutOfRange, Qt::UniqueConnection);
         connect(pBullet, &Bullet::sigAlienBulletCollision, this, &Game::onAlienBulletCollision, Qt::UniqueConnection);
-        angle += 0.5;
+        angle += bulletAngle;
     }
 }
 
-void Game::onGameOver()
+void Game::gameOver()
 {
     // Change scene for game over
     setScene(gameOverMenu);
@@ -531,7 +516,6 @@ void Game::onGameOver()
 
     // Delete attributes that are in gameScene
     delete player;
-    delete stage;
     delete qScrollingBg;
     delete qScrollingBg2;
     delete backToMenuButton;
@@ -697,8 +681,6 @@ void Game::onBackToMainMenu()
     // Delete attributes that are in gameScene
     delete player;
     player = nullptr;
-    delete stage;
-    stage = nullptr;
     delete qScrollingBg;
     qScrollingBg = nullptr;
     delete qScrollingBg2;
