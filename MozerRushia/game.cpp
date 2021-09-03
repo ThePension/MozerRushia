@@ -536,6 +536,7 @@ void Game::onGameOver()
     delete moveTimer;
     delete spawnTimer;
 
+    // Delete attributes that are in gameScene
     delete player;
     delete stage;
     delete qScrollingBg;
@@ -634,13 +635,13 @@ void Game::onSpawn()
     switch (currentLvl)
     {
         case 2:
-            spawnArcade(QPixmap(":/Asteroid.png"));
+            spawn(QPixmap(":/Asteroid.png"));
             break;
         case 3:
-            spawnArcade(QPixmap(":/AlienShip_Lvl2.png"));
+            spawn(QPixmap(":/AlienShip_Lvl2.png"));
             break;
         case 4:
-            spawnArcade(QPixmap(":/AmericanShuttle_Lvl.png"));
+            spawn(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
 }
@@ -650,22 +651,22 @@ void Game::onSpawnArcade()
     int randSprite = rand()%(3);
     switch (randSprite) {
         case 0:
-            spawnArcade(QPixmap(":/Asteroid.png"));
+            spawn(QPixmap(":/Asteroid.png"));
             //stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
             break;
         case 1:
-            spawnArcade(QPixmap(":/AlienShip.png"));
+            spawn(QPixmap(":/AlienShip.png"));
             //stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
             break;
         case 2:
-            spawnArcade(QPixmap(":/AmericanShuttle_Lvl.png"));
+            spawn(QPixmap(":/AmericanShuttle_Lvl.png"));
             //stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
             break;
     }
     //stage->onSpawn(gameScene);
 }
 
-void Game::spawnArcade(QPixmap sprite)
+void Game::spawn(QPixmap sprite)
 {
     Alien *pAlien = new Alien(sprite, nullptr, moveTimer);
     int posX = rand() % int(scene()->width() - alienSize.width());
@@ -674,10 +675,6 @@ void Game::spawnArcade(QPixmap sprite)
     connect(pAlien, &Alien::sigAlienOutOfRange, this, &Game::onAlienOutOfRange);
 }
 
-void Game::spawn(QPixmap sprite)
-{
-
-}
 void Game::onBackToMainMenu()
 {
     // Delete pause button (because gameScene->clear doesn't do it if they're attributes of Game class)
@@ -697,6 +694,22 @@ void Game::onBackToMainMenu()
         delete difficultyTimer;
         difficultyTimer = nullptr;
     }
+
+    // Delete attributes that are in gameScene
+    delete player;
+    player = nullptr;
+    delete stage;
+    stage = nullptr;
+    delete qScrollingBg;
+    qScrollingBg = nullptr;
+    delete qScrollingBg2;
+    qScrollingBg2 = nullptr;
+    delete backToMenuButton;
+    backToMenuButton = nullptr;
+    delete quitButton;
+    quitButton = nullptr;
+    delete resumeButton;
+    resumeButton = nullptr;
 
     // Reset the view if it was rotated
     this->resetTransform();

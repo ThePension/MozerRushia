@@ -60,7 +60,6 @@ private:
     void onGameOver();
     void decreaseHealth();
     void increaseHealth();
-    void spawnArcade(QPixmap);
     void spawn(QPixmap);
     Stage * stage;
     Player * player;
