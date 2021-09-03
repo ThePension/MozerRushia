@@ -1,9 +1,9 @@
 #include "alien.h"
 #include <QTimer>
 
-Alien::Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent)
+Alien::Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer, int speedAlien) : SpaceShip(sprite, parent)
 {
-    speed = 2;
+    this->speed = speedAlien;
     connect(timer, &QTimer::timeout, this, &Alien::onMove);
 }
 

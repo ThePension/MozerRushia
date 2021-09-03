@@ -17,6 +17,12 @@ int const gMaxHealth = 3;
 int const lvl=0;
 double const bulletAngle = 0.5;
 int const bulletSpeed = 5;
-int const dropSpeed = 2;
+int const dropSpeed = 3;
+int const arcadeAlienSpeed = 2;
+int const arcadeAsteroidSpeed = 1;
+int const arcadeShuttleSpeed = 3;
+int const storyAlienSpeed = 4;
+int const storyAsteroidSpeed = 2;
+int const storyShuttleSpeed = 3;
 
 #endif // SETTINGS_H
