@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 #include <QTextCursor>
+// #include <Q
 
 #include "player.h"
 #include "settings.h"
@@ -60,7 +61,7 @@ private:
     void onGameOver();
     void decreaseHealth();
     void increaseHealth();
-    void spawn(QPixmap);
+    void spawnAlien(QPixmap);
     Stage * stage;
     Player * player;
     QTimer * moveTimer = nullptr;
