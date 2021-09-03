@@ -54,7 +54,7 @@ private:
     void gameOver();
     void decreaseHealth();
     void increaseHealth();
-    void spawnAlien(QPixmap);
+    void spawnAlien(QPixmap, int);
 
     void increaseScore();
 

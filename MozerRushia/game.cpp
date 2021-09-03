@@ -282,18 +282,18 @@ void Game::runArcade()
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
-
+    spawnTimeInterval = 2000;
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawnArcade, Qt::UniqueConnection);
 
     // Difficulty management
     difficultyTimer = new QTimer();
-    difficultyTimer->start(10000); // Increase the number of aliens by 1 every 10 seconds
+    difficultyTimer->start(5000); // Increase the number of aliens by 1 every 10 seconds
     connect(difficultyTimer, &QTimer::timeout,[this]()  mutable {
         // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
         if(moveTimer->isActive()){
-            if(spawnTimeInterval > 500) spawnTimeInterval -= 100;
-            else spawnTimeInterval = 500;
+            if(spawnTimeInterval > 250) spawnTimeInterval -= 50;
+            else spawnTimeInterval = 250;
             spawnTimer->stop();
             spawnTimer->start(spawnTimeInterval);
         }
@@ -664,7 +664,7 @@ void Game::onDropPlayerCollision(Drop* pDrop)
 void Game::onAlienBulletCollision(Alien* pAlien, Bullet* pBullet)
 {
 
-    if(rand() % 5 == 0) // 20% chances to spawn a drop
+    if(rand() % 10 == 0) // 20% chances to spawn a drop
     {
 
         Drop *pDrop = new Drop(dropSpeed, nullptr, moveTimer);
@@ -729,8 +729,10 @@ void Game::gameOver()
 
     // Delete timers
     delete difficultyTimer;
+    difficultyTimer = nullptr;
     delete moveTimer;
     delete spawnTimer;
+    spawnTimer = nullptr;
 
     // Delete attributes that are in gameScene
     delete player;
@@ -824,13 +826,14 @@ void Game::onSpawn()
     switch (currentLvl)
     {
         case 1:
-            spawnAlien(QPixmap(":/Asteroid.png"));
+            spawnAlien(QPixmap(":/Asteroid.png"), storyAsteroidSpeed);
             break;
         case 2:
-            spawnAlien(QPixmap(":/AlienShip_Lvl2.png"));
+            spawnAlien(QPixmap(":/AlienShip_Lvl2.png"), storyAsteroidSpeed);
             break;
         case 3:
-            spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"));
+            spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"), storyShuttleSpeed);
+
             break;
     }
 }
@@ -840,23 +843,20 @@ void Game::onSpawnArcade()
     int randSprite = rand()%(3);
     switch (randSprite) {
         case 0:
-            spawnAlien(QPixmap(":/Asteroid.png"));
-            //stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
+            spawnAlien(QPixmap(":/Asteroid.png"), arcadeAsteroidSpeed);
             break;
         case 1:
-            spawnAlien(QPixmap(":/AlienShip.png"));
-            //stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
+            spawnAlien(QPixmap(":/AlienShip.png"), arcadeAlienSpeed);
             break;
         case 2:
-            spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"));
-            //stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
+            spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"), arcadeShuttleSpeed);
             break;
     }
 }
 
-void Game::spawnAlien(QPixmap sprite)
+void Game::spawnAlien(QPixmap sprite, int speed)
 {
-    Alien *pAlien = new Alien(sprite, nullptr, moveTimer);
+    Alien *pAlien = new Alien(sprite, nullptr, moveTimer, speed);
     int posX = rand() % int(gameScene->width() - alienSize.width());
     gameScene->addItem(pAlien);
     pAlien->setPos(posX, -alienSize.height());
