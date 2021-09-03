@@ -16,15 +16,25 @@ void Weapon::shoot(int posPlayerSpaceShipX, int posPlayerSpaceShipY, int weaponN
     for(int i = 0; i < weaponNumber; i++)
     {
         bullet = new Bullet(bSprite, speed, angle, nullptr, moveTimer);
+
+
         bullet->setPos(posPlayerSpaceShipX + spaceShipSize.width() / 2 - bulletSize.width() / 2, posPlayerSpaceShipY - bulletSize.height() / 2);
         scene()->addItem(bullet);
-        connect(bullet,&Bullet::sigAlienCollision,this,&Weapon::onAlienCollision);
+
+
+
         angle += 0.25*2;
     }
 }
 
 void Weapon::onAlienCollision()
 {
+    qDebug() << "Signal alien touché";
     emit sigScore();
 }
 
+void Weapon::onIncreaseHealth()
+{
+    qDebug() << "Signal drop de vie touché";
+    emit sigIncreaseHealth();
+}

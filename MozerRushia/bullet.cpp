@@ -9,7 +9,6 @@ Bullet::Bullet(QPixmap sprite, int speed, double offsetX, QGraphicsItem* parent,
     setPixmap(sprite.scaled(bulletSize, Qt::KeepAspectRatio));
     connect(moveTimer, &QTimer::timeout, this, &Bullet::onMove);
     offset = offsetX;
-    timer = moveTimer;
 }
 
 Bullet::~Bullet()
@@ -20,37 +19,20 @@ Bullet::~Bullet()
 void Bullet::onMove()
 {
     QList<QGraphicsItem*> firstCollidingItem = collidingItems();
-    Drop *d = nullptr;
-    QPointF posAlien;
     for(auto const pItem : firstCollidingItem)
     {
         Alien* pAlien = dynamic_cast<Alien*>(pItem);
         if(pAlien != nullptr)
         {
-            posAlien = pAlien->pos();
-            scene()->removeItem(pAlien);
-            emit sigAlienCollision();
-            delete pAlien;
-
-            this->setPos(0,0);
-            if((rand() % 5) == 0){
-               d = new Drop(speed, nullptr, timer);
-               d->setPos(posAlien.x(), posAlien.y());
-
-               scene()->addItem(d);
-
-            }
-            scene()->removeItem(this);
-            delete this;
-            return;
+            emit sigAlienBulletCollision(pAlien, this);
         }
     }
 
     setPos(x() + offset, y() - this->speed);
-
-    if (pos().y()<0)
+    if(this->pos().y() < 0)
     {
-        scene()->removeItem(this);
-        delete this;
+        emit sigBulletOutOfRange(this);
     }
+
 }
+

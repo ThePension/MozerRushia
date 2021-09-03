@@ -1,6 +1,7 @@
 #include "game.h"
 #include "settings.h"
 #include "stage.h"
+#include "drop.h"
 #include <QPixmap>
 #include <QTimer>
 #include <QPushButton>
@@ -39,8 +40,8 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     // Creation game over scene
     gameOverMenu = new GameOverMenu(this, screenSize);
     gameOverMenu->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit);
-    connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::displayMainMenu);
+    connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
+    connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::displayMainMenu, Qt::UniqueConnection);
 }
 
 void Game::displayMainMenu(){
@@ -66,7 +67,8 @@ void Game::run()
 
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-
+    gameScene->clear();
+    this->viewport()->update();
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
@@ -87,28 +89,25 @@ void Game::run()
         case 1:
         {
             nxtLvl->setText("Continuer");
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
             break;
         }
         case 2:
         {
             nxtLvl->setText("Continuer");
-            //rotateView(270);
-            //gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-            //nxtLvl->setGeometry(QRect(width()/2, height()/2, 200, 100));
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
             break;
         }
         case 3:
         {
             rotateView(180);
             nxtLvl->setText("Finir");
-            connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit); //will close the game if the narrative isn't finish
+            connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit, Qt::UniqueConnection); //will close the game if the narrative isn't finish
             break;
         }
         default:
         {
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel);
+            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
             break;
         }
 
@@ -154,9 +153,12 @@ void Game::run()
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
     player->setPos(width() / 2, height() - spaceShipSize.height());
     gameScene->addItem(player);
-
+    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision);
+    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
+
 
     // Stages creation
     stage = new Stage(moveTimer);
@@ -167,9 +169,6 @@ void Game::run()
     HUDMan=new HUD(nullptr);
     scene()->addItem(HUDMan); //Pourquoi scene et pas gameScene ?
     HUDMan->show();
-    connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
-    connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
-    connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
 
     // Scrolling background connection
     connect(moveTimer, &QTimer::timeout, this, &Game::onBackgroundScrolling, Qt::UniqueConnection);
@@ -223,6 +222,8 @@ void Game::runArcade()
 
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+    gameScene->clear();
+    this->viewport()->update();
 
     // Timers creations
     spawnTimer = new QTimer();
@@ -246,7 +247,7 @@ void Game::runArcade()
     quitButton->setText("Quitter le jeu");
     quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
     gameScene->addWidget(quitButton);
-    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit);
+    connect(quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
 
     // Creation back to menu button for pause menu
     backToMenuButton = new MenuButton(this);
@@ -275,7 +276,9 @@ void Game::runArcade()
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
     player->setPos(width() / 2, height() - spaceShipSize.height());
     gameScene->addItem(player);
-
+    connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision);
+    connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision);
+    connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
@@ -301,10 +304,10 @@ void Game::runArcade()
     HUDMan=new HUD(nullptr);
     gameScene->addItem(HUDMan);
     HUDMan->show();
-    connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
-    connect(player, &Player::sigAlienRocketCollision, this, &Game::onDecreaseHealth);
-    connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
-
+    //connect(player->currentWeapon, &Weapon::sigScore, this, &Game::onIncreaseScore);
+    //connect(player, &Player::sigAlienPlayerCollision, this, &Game::onDecreaseHealth);
+    //connect(stage, &Stage::sigDecreaseHealthOutOfRange, this, &Game::onDecreaseHealth);
+    //connect(player, &Player::sigIncreaseHealth, this, &Game::onIncreaseHealth);
     // Scrolling background connection
     connect(moveTimer, &QTimer::timeout, this, &Game::onArcadeModeBackgroundScrolling, Qt::UniqueConnection);
 }
@@ -333,7 +336,7 @@ void Game::keyPressEvent(QKeyEvent *e)
                 if(moveTimer != nullptr){
                     if(moveTimer->isActive()){
                         if(!e->isAutoRepeat()){ // Check if the key is held : if it is, call the shoot function once
-                            player->currentWeapon->shoot(player->pos().x(), player->pos().y(), player->currentWeapon->weaponNumber);
+                            emit sigPlayerShoot();
                         }
                     }
                 }
@@ -408,32 +411,138 @@ void Game::onIncreaseScore()
 {
     hitCount+=1;
     HUDMan->setScore(hitCount*50, hitLive);
-    CheckPoints();
+    //CheckPoints();
 }
 
-void Game::onIncreaseHealth()
+void Game::increaseHealth()
 {
     hitLive+=1;
     HUDMan->setScore(hitCount*50, hitLive);
-    CheckPoints();
+    //CheckPoints();
 }
 
-void Game::onDecreaseHealth()
+void Game::decreaseHealth()
 {
     hitLive-=1;
     HUDMan->setScore(hitCount*50, hitLive);
-    CheckPoints();
+    //CheckPoints();
+    if (hitLive <=0)
+    {
+        hitLive=3;
+        onGameOver();
+        HUDMan->reset();
+        //onGameOver();
+    }
+}
+
+void Game::onAlienPlayerCollision(Alien* pAlien)
+{
+    decreaseHealth();
+    if(pAlien != nullptr)
+    {
+        gameScene->removeItem(pAlien);
+        delete pAlien;
+    }
+
+}
+
+void Game::onDropPlayerCollision(Drop* pDrop)
+{
+    gameScene->removeItem(pDrop);
+    switch(pDrop->type)
+    {
+        case 1:
+            if(player->currentWeapon->weaponNumber <= 3)
+                player->currentWeapon->weaponNumber += 2;
+            break;
+        case 2:
+            if(player->currentWeapon->weaponNumber >= 3)
+                player->currentWeapon->weaponNumber -= 2;
+            break;
+        case 3:
+            increaseHealth();
+            break;
+    }
+    delete pDrop;
+}
+
+void Game::onAlienBulletCollision(Alien* pAlien, Bullet* pBullet)
+{
+
+    if(rand() % 5 == 0) // 20% chances to spawn a drop
+    {
+        qDebug() << "Drop";
+        Drop *pDrop = new Drop(pAlien->speed, nullptr, moveTimer);
+        pDrop->setPos(pAlien->pos());
+        gameScene->addItem(pDrop);
+    }
+        onIncreaseScore();
+    gameScene->removeItem(pAlien);
+    gameScene->removeItem(pBullet);
+    delete pAlien;
+    delete pBullet;
+
+}
+
+void Game::onAlienOutOfRange(Alien* pAlien)
+{
+    //decreaseHealth();
+    gameScene->removeItem(pAlien);
+    delete pAlien;
+    decreaseHealth();
+}
+
+void Game::onBulletOutOfRange(Bullet* pBullet)
+{
+    gameScene->removeItem(pBullet);
+    delete pBullet;
+}
+
+void Game::onDropOutOfRange(Drop* pDrop)
+{
+    gameScene->removeItem(pDrop);
+    delete pDrop;
+}
+
+void Game::onPlayerShoot()
+{
+    QPixmap bSprite(":/SovietBullet.png");
+    Bullet *pBullet;
+    int weaponNumber = player->currentWeapon->weaponNumber;
+    double angle = -0.25*weaponNumber;
+    if(weaponNumber == 1)
+    {angle = 0;}
+    for(int i = 0; i < weaponNumber; i++)
+    {
+        pBullet = new Bullet(bSprite, 5, angle, nullptr, moveTimer); //A voir pour charger le speed depuis les settings
+        pBullet->setPos(player->pos().x() + bulletSize.width() / 2, player->pos().y() - bulletSize.height() / 2);
+        gameScene->addItem(pBullet);
+        connect(pBullet, &Bullet::sigBulletOutOfRange, this, &Game::onBulletOutOfRange, Qt::UniqueConnection);
+        connect(pBullet, &Bullet::sigAlienBulletCollision, this, &Game::onAlienBulletCollision, Qt::UniqueConnection);
+        angle += 0.5;
+    }
 }
 
 void Game::onGameOver()
 {
     // Change scene for game over
     setScene(gameOverMenu);
+
+
     this->resetTransform();
 
     // Delete timers
+    delete difficultyTimer;
     delete moveTimer;
     delete spawnTimer;
+
+    delete player;
+    delete stage;
+    delete qScrollingBg;
+    delete qScrollingBg2;
+    delete backToMenuButton;
+    delete quitButton;
+    delete resumeButton;
 
     // Display the score
     QTextDocument * oldDocument = gameOverMenu->scoreText->document();
@@ -457,8 +566,7 @@ void Game::onGameOver()
     nxtLvl = nullptr;*/
     currentLvl = 1;
 
-    // Clear the game scene
-    gameScene->clear();
+
 
     // Show cursor
     QApplication::setOverrideCursor(Qt::ArrowCursor);
@@ -492,7 +600,7 @@ void Game::onChangeLevel()
 
 void Game::onBackgroundScrolling()
 {
-    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
+    qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
 
     if(qScrollingBg->pos().y()>=0)
     {
@@ -526,16 +634,15 @@ void Game::onSpawn()
     switch (currentLvl)
     {
         case 2:
-            stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
+            spawnArcade(QPixmap(":/Asteroid.png"));
             break;
         case 3:
-            stage->setAlienSpritePixmap(QPixmap(":/AlienShip_Lvl2.png"));
+            spawnArcade(QPixmap(":/AlienShip_Lvl2.png"));
             break;
         case 4:
-            stage->setAlienSpritePixmap(QPixmap(":/AmericanShuttle_Lvl.png"));
+            spawnArcade(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
-    stage->onSpawn(gameScene);
 }
 
 void Game::onSpawnArcade()
@@ -543,18 +650,34 @@ void Game::onSpawnArcade()
     int randSprite = rand()%(3);
     switch (randSprite) {
         case 0:
-            stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
+            spawnArcade(QPixmap(":/Asteroid.png"));
+            //stage->setAlienSpritePixmap(QPixmap(":/Asteroid.png"));
             break;
         case 1:
-            stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
+            spawnArcade(QPixmap(":/AlienShip.png"));
+            //stage->setAlienSpritePixmap(QPixmap(":/AlienShip.png"));
             break;
         case 2:
-            stage->setAlienSpritePixmap(QPixmap(":/AmericanShuttle_Lvl.png"));
+            spawnArcade(QPixmap(":/AmericanShuttle_Lvl.png"));
+            //stage->setAlienSpritePixmap(QPixmap(":/AlienRocket.png"));
             break;
     }
-    stage->onSpawn(gameScene);
+    //stage->onSpawn(gameScene);
 }
 
+void Game::spawnArcade(QPixmap sprite)
+{
+    Alien *pAlien = new Alien(sprite, nullptr, moveTimer);
+    int posX = rand() % int(scene()->width() - alienSize.width());
+    scene()->addItem(pAlien);
+    pAlien->setPos(posX, -alienSize.height());
+    connect(pAlien, &Alien::sigAlienOutOfRange, this, &Game::onAlienOutOfRange);
+}
+
+void Game::spawn(QPixmap sprite)
+{
+
+}
 void Game::onBackToMainMenu()
 {
     // Delete pause button (because gameScene->clear doesn't do it if they're attributes of Game class)

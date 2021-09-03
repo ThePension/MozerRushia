@@ -18,9 +18,11 @@ public:
 
 signals:
     void sigScore();
+    void sigIncreaseHealth();
 
 public slots:
     void onAlienCollision();
+    void onIncreaseHealth();
 
 private:
     double cadence = 1;

@@ -19,7 +19,8 @@ public:
     double offset = 0;
 
 signals:
-    void sigAlienCollision();
+    void sigBulletOutOfRange(Bullet *);
+    void sigAlienBulletCollision(Alien*, Bullet*);
 private:
     QTimer *timer;
 private slots :

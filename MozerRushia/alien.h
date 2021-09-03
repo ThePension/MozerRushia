@@ -2,6 +2,7 @@
 #define ALIEN_H
 
 #include "spaceship.h"
+//#include "bullet.h"
 
 
 class Alien : public SpaceShip
@@ -13,7 +14,8 @@ public:
     ~Alien();
 
 signals:
-    void sigAlienOutOfRange();
+    void sigAlienOutOfRange(Alien*);
+//    void sigAlienBulletCollision(Alien*, Bullet*);
 
 public slots:
     void onMove();
