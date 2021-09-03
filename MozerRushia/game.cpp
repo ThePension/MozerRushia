@@ -15,8 +15,7 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-
-        QApplication::setOverrideCursor(Qt::ArrowCursor);
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
 
     // Remove white border of view
     this->setStyleSheet("border-width: 0px; border-style: solid");
@@ -30,9 +29,13 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     mainMenuScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
 
     // Creation narration Scene
+    narrationScene = new QGraphicsScene(this);
+    narrationScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
+
+    // Creation history Scene
     historyScene = new QGraphicsScene(this);
     historyScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
-    historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    historyScene->setBackgroundBrush(QPixmap(":/Narration1.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
     // Creation game over scene
     gameOverMenu = new GameOverMenu(this, screenSize);
@@ -44,7 +47,7 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 void Game::displayMainMenu(){
     // Connect menu's buttons
     connect(mainMenuScene->playArcadeButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
-    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
+    connect(mainMenuScene->playHistoryButton, &MenuButton::clicked, this, &Game::onChangeLevel, Qt::UniqueConnection);
     connect(mainMenuScene->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
 
     // Set the scene with mainMenu scene
@@ -74,39 +77,6 @@ void Game::run()
     // Replay button connection
     connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::run, Qt::UniqueConnection);
 
-    //next level button
-    nxtLvl = new MenuButton(nullptr);
-    nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
-    historyScene->addWidget(nxtLvl);
-    switch(currentLvl)
-    {
-        case 1:
-        {
-            nxtLvl->setText("Continuer");
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
-            break;
-        }
-        case 2:
-        {
-            nxtLvl->setText("Continuer");
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
-            break;
-        }
-        case 3:
-        {
-            rotateView(180);
-            nxtLvl->setText("Finir");
-            connect(nxtLvl,&MenuButton::clicked,this,&QApplication::quit, Qt::UniqueConnection); //will close the game if the narrative isn't finish
-            break;
-        }
-        default:
-        {
-            connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
-            break;
-        }
-
-    }
-
     // Changing for the scene game
     setScene(gameScene);
 
@@ -133,12 +103,10 @@ void Game::run()
 
     // Background image
     qScrollingBg = new QGraphicsPixmapItem();
-    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl2.jpg").scaledToWidth(gameScene->width());
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl1.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     gameScene->addItem(qScrollingBg);
-
-    if(currentLvl == 1) onChangeLevel();
 
     // Main timer
     moveTimer->start(1000/FPS);
@@ -152,8 +120,6 @@ void Game::run()
     connect(this, &Game::sigPlayerShoot, this, &Game::onPlayerShoot, Qt::UniqueConnection);
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
-
-
 
     spawnTimer->start(spawnTimeInterval);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
@@ -169,6 +135,10 @@ void Game::run()
 
 void Game::runLvl1()
 {
+    run();
+    QPixmap bgPixmap = QPixmap(":/BackGround_Lvl1.jpg").scaledToWidth(gameScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     currentLvl+=1;
 }
 
@@ -203,6 +173,39 @@ void Game::runLvl3()
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     currentLvl+=1;
+}
+
+void Game::runNarr1()
+{
+    qScrollingNar=new QGraphicsPixmapItem;
+    QPixmap bgPixmap = QPixmap(":/Narration1.jpg").scaledToWidth(narrationScene->width());
+    qScrollingNar->setPixmap(bgPixmap);
+    qScrollingNar->setPos(0,0);
+    narrationScene->addItem(qScrollingNar);
+}
+
+void Game::runNarr2()
+{
+    run();
+    QPixmap bgPixmap = QPixmap(":/Narration3.jpg").scaledToWidth(historyScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0,0);
+}
+
+void Game::runNarr3()
+{
+    run();
+    QPixmap bgPixmap = QPixmap(":/Narration4.jpg").scaledToWidth(historyScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, 0);
+}
+
+void Game::runNarr4()
+{
+    run();
+    QPixmap bgPixmap = QPixmap(":/Narration5.jpg").scaledToWidth(historyScene->width());
+    qScrollingBg->setPixmap(bgPixmap);
+    qScrollingBg->setPos(0, 0);
 }
 
 void Game::runArcade()
@@ -306,7 +309,6 @@ void Game::rotateView(int rotationDegree)
     QTransform transform;
     transform.rotate(rotationDegree);
     setTransform(transform);
-
 }
 
 void Game::keyPressEvent(QKeyEvent *e)
@@ -542,7 +544,7 @@ void Game::gameOver()
     // Delete next level button
     /*delete nxtLvl;
     nxtLvl = nullptr;*/
-    currentLvl = 1;
+    currentLvl = lvl;
 
 
 
@@ -554,20 +556,57 @@ void Game::onChangeLevel()
 {
     switch (currentLvl)
     {
+    case 0:
+
+        //next level button
+        nxtLvl = new MenuButton(nullptr);
+        nxtLvl->setGeometry(QRect(width()-210, height()-110, 200, 100));
+        historyScene->addWidget(nxtLvl);
+        nxtLvl->setText("Continuer");
+        connect(nxtLvl,&MenuButton::clicked,this,&Game::onChangeLevel, Qt::UniqueConnection);
+
+        historyScene->setBackgroundBrush(QPixmap(":/Narration1.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        setScene(historyScene);
+        //setScene(gameScene);
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+        currentLvl++;
+        break;
     case 1:
-        spawnTimeInterval=1500;
-        runLvl1();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        //runNarr1();
+        historyScene->setBackgroundBrush(QPixmap(":/Narration2.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        //setScene(narrationScene);
+        currentLvl++;
         break;
     case 2:
-        spawnTimeInterval=500;
-        runLvl2();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        spawnTimeInterval=1500;
+        runLvl1();
+        //setScene(gameScene);
         break;
     case 3:
+        //runNarr2();
+        historyScene->setBackgroundBrush(QPixmap(":/Narration3.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        currentLvl++;
+        break;
+    case 4:
+        spawnTimeInterval=500;
+        runLvl2();
+        break;
+    case 5:
+        //runNarr3();
+        historyScene->setBackgroundBrush(QPixmap(":/Narration4.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        currentLvl++;
+        break;
+    case 6:
         spawnTimeInterval=750;
         runLvl3();
-        historyScene->setBackgroundBrush(QPixmap(":/Narration_Test_3.png").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        break;
+    case 7:
+        //rotateView(180);
+        nxtLvl->setText("Finir");
+        connect(nxtLvl,&MenuButton::clicked,this,&Game::onBackToMainMenu, Qt::UniqueConnection);
+        //runNarr4();
+        historyScene->setBackgroundBrush(QPixmap(":/Narration5.jpg").scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     default:
         runLvl1();
@@ -591,12 +630,17 @@ void Game::onBackgroundScrolling()
         setScene(historyScene);
 
         moveTimer->stop();
+
         gameScene->clear();
 
         // Show cursor
         QApplication::setOverrideCursor(Qt::ArrowCursor);
     }else{
-        qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 1);
+        if(currentLvl%2!=0)
+            qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() + 10);
+        else
+            qScrollingBg->setPos(qScrollingBg->pos().x(), qScrollingBg->pos().y() - 1);
+
     }
 }
 
@@ -620,10 +664,10 @@ void Game::onSpawn()
         case 2:
             spawnAlien(QPixmap(":/Asteroid.png"));
             break;
-        case 3:
+        case 4:
             spawnAlien(QPixmap(":/AlienShip_Lvl2.png"));
             break;
-        case 4:
+        case 6:
             spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"));
             break;
     }
@@ -660,6 +704,11 @@ void Game::spawnAlien(QPixmap sprite)
 
 void Game::onBackToMainMenu()
 {
+    // Reset the scores, lives and the level
+    currentLvl=lvl;
+    hitCount=0;
+    hitLive=gMaxHealth;
+
     // Delete pause button (because gameScene->clear doesn't do it if they're attributes of Game class)
     delete backToMenuButton;
     backToMenuButton = nullptr;

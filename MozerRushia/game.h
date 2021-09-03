@@ -24,6 +24,10 @@ public:
     void runLvl1();
     void runLvl2();
     void runLvl3();
+    void runNarr1();
+    void runNarr2();
+    void runNarr3();
+    void runNarr4();
     void runArcade();
     void rotateView(int rotationDegree);
     void pauseTheGame();
@@ -59,9 +63,11 @@ private:
     MainMenu * mainMenuScene;
     MenuButton * nxtLvl = nullptr;
     QGraphicsScene * gameScene;
-    QGraphicsScene * historyScene; // will be use for the naration
+    QGraphicsScene * narrationScene;
+    QGraphicsScene * historyScene;
     GameOverMenu * gameOverMenu;
     HUD* HUDMan = nullptr;
+    QGraphicsPixmapItem * qScrollingNar;
     QGraphicsPixmapItem * qScrollingBg;
     QGraphicsPixmapItem * qScrollingBg2 = nullptr;
     QSize * screenSize;

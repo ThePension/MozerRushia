@@ -14,7 +14,7 @@ QSize const dropSize = QSize(50, 50);
 
 int const FPS = 144;
 int const gMaxHealth = 3;
-int const lvl=1;
+int const lvl=0;
 double const bulletAngle = 0.5;
 int const bulletSpeed = 5;
 int const dropSpeed = 2;
