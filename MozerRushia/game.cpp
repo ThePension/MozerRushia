@@ -31,6 +31,16 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 
     // Randomize random numbers
     srand((unsigned int)time(NULL));
+
+    // Music theme
+    // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
+    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+    QFile::copy(":/mainTheme.wav", path);
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+
+    QTimer * playSongLoopTimer = new QTimer();
+    playSongLoopTimer->start(138000); // 2min18sec
+    connect(playSongLoopTimer, &QTimer::timeout, this, &Game::onPlaySong);
 }
 
 void Game::displayMainMenu(){
@@ -41,13 +51,6 @@ void Game::displayMainMenu(){
 
     // Set the scene with mainMenu scene
     setScene(mainMenuScene);
-
-    // Music theme
-    // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
-    QFile::copy(":/mainTheme.wav", path);
-    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
-
 }
 
 void Game::runHistory()
@@ -764,6 +767,13 @@ void Game::onPlayerBulletCollision(Bullet * pBullet)
         delete pBullet;
     }
     decreaseHealth();
+}
+
+void Game::onPlaySong()
+{
+    qDebug() << "OnplaySong";
+    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
 }
 
 void Game::gameOver()

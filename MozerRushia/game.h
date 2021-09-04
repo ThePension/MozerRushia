@@ -63,6 +63,7 @@ public slots:
     void onPlayerShoot(); // The Player shot a Bullet
     void onAlienShoot(Alien *);
     void onPlayerBulletCollision(Bullet *);
+    void onPlaySong();
 
 private:
     Player * player = nullptr;
