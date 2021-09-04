@@ -39,6 +39,12 @@ public:
     void runLevel2();
     void runLevel3();
     void clearGameScene();
+    void gameOver();
+    void decreaseHealth();
+    void increaseHealth();
+    void spawnAlien(QPixmap, int);
+    void increaseScore();
+
 signals:
     void sigPlayerShoot(); // The Player shot a Bullet
 
@@ -59,13 +65,6 @@ public slots:
     void onPlayerBulletCollision(Bullet *);
 
 private:
-    void gameOver();
-    void decreaseHealth();
-    void increaseHealth();
-    void spawnAlien(QPixmap, int);
-
-    void increaseScore();
-
     Player * player = nullptr;
     QTimer * moveTimer = nullptr;
     MainMenu * mainMenuScene;

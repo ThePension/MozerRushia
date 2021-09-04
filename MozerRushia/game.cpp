@@ -326,6 +326,7 @@ void Game::rotateView(int rotationDegree)
 void Game::keyPressEvent(QKeyEvent *e)
 {
     if(isNarrativePlaying) return;
+    if(player == nullptr) return;
 
     switch (e->key()) {
             case Qt::Key_Left:
@@ -377,7 +378,7 @@ void Game::keyReleaseEvent(QKeyEvent *e)
 {
     // Direction
     if(e->key() == Qt::Key_Left || e->key() == Qt::Key_Right)
-        player->direction = Direction::any;
+        if(player != nullptr) player->direction = Direction::any;
 }
 
 void Game::pauseTheGame()
