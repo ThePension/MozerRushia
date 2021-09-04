@@ -17,14 +17,14 @@ int const gMaxHealth = 3;
 int const lvl = 1;
 double const bulletAngle = 0.5;
 int const playerBulletSpeed = -5;
-int const alienBulletSpeed = 6;
+int const alienBulletSpeed = 8;
 int const dropSpeed = 3;
 int const arcadeAlienSpeed = 2;
 int const arcadeAsteroidSpeed = 1;
 int const arcadeShuttleSpeed = 3;
-int const storyAlienSpeed = 8;
+int const storyAlienSpeed = 6;
 int const storyAsteroidSpeed = 2;
 int const storyShuttleSpeed = 4;
-int const AlienSpeedShootInvervalInMs = 1000;
+int const AlienSpeedShootInvervalInMs = 500;
 
 #endif // SETTINGS_H

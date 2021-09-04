@@ -44,11 +44,10 @@ void Game::displayMainMenu(){
 
     // Music theme
     // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-    /*
     QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
     QFile::copy(":/mainTheme.wav", path);
     PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
-    */
+
 }
 
 void Game::runHistory()
@@ -300,8 +299,8 @@ void Game::runArcade()
     connect(difficultyTimer, &QTimer::timeout,[this]()  mutable {
         // stage->setNumberOfAliens(stage->getNumberOfAliens() + 1);
         if(moveTimer->isActive()){
-            if(spawnTimeInterval > 250) spawnTimeInterval -= 50;
-            else spawnTimeInterval = 250;
+            if(spawnTimeInterval > 200) spawnTimeInterval -= 50;
+            else spawnTimeInterval = 200;
             spawnTimer->stop();
             spawnTimer->start(spawnTimeInterval);
         }
@@ -510,6 +509,7 @@ void Game::runLevel2()
     // Player creation
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
     player->setPos(width() / 2, height() - spaceShipSize.height());
+    player->currentWeapon->weaponNumber = weaponNumber;
     gameScene->addItem(player);
     connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision, Qt::UniqueConnection);
     connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
@@ -568,6 +568,7 @@ void Game::runLevel3()
     // Player creation
     player = new Player(QPixmap(":/PlayerRocket.png"), nullptr, moveTimer);
     player->setPos(width() / 2, height() - spaceShipSize.height());
+    player->currentWeapon->weaponNumber = weaponNumber;
     gameScene->addItem(player);
     connect(player, &Player::sigAlienPlayerCollision, this, &Game::onAlienPlayerCollision, Qt::UniqueConnection);
     connect(player, &Player::sigDropPlayerCollision, this, &Game::onDropPlayerCollision, Qt::UniqueConnection);
@@ -654,11 +655,17 @@ void Game::onDropPlayerCollision(Drop* pDrop)
     {
         case 1:
             if(player->currentWeapon->weaponNumber <= 3)
-                player->currentWeapon->weaponNumber += 2;
+            {
+                weaponNumber += 2;
+                player->currentWeapon->weaponNumber = weaponNumber;
+            }
             break;
         case 2:
             if(player->currentWeapon->weaponNumber >= 3)
-                player->currentWeapon->weaponNumber -= 2;
+            {
+                weaponNumber -= 2;
+                player->currentWeapon->weaponNumber = weaponNumber;
+            }
             break;
         case 3:
             increaseHealth();
@@ -761,6 +768,9 @@ void Game::onPlayerBulletCollision(Bullet * pBullet)
 
 void Game::gameOver()
 {
+    // Reset play weapon number
+    player->currentWeapon->weaponNumber = weaponNumber;
+
     // Change scene for game over
     setScene(gameOverMenu);
 
@@ -912,6 +922,9 @@ void Game::spawnAlien(QPixmap sprite, int speed)
 
 void Game::onBackToMainMenu()
 {
+    // Reset play weapon number
+    player->currentWeapon->weaponNumber = weaponNumber;
+
     // Disconnect replay button connection
     gameOverMenu->disconnectReplayButtonConnection();
 

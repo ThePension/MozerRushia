@@ -87,6 +87,7 @@ private:
     int spawnTimeInterval = 1000;
     int currentNarationStep = 1;
     bool isNarrativePlaying = false;
+    int weaponNumber = 1;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
