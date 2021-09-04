@@ -2,11 +2,8 @@
 #include "player.h"
 #include <stdlib.h>
 
-
-
 Drop::Drop(int speed, QGraphicsItem *parent, QTimer *moveTimer) : QGraphicsPixmapItem(parent)
 {
-
     this->speed = speed;
     QPixmap sprite;
     type = (rand() % 3 + 1);
@@ -24,8 +21,6 @@ Drop::Drop(int speed, QGraphicsItem *parent, QTimer *moveTimer) : QGraphicsPixma
 
     setPixmap(sprite.scaled(dropSize, Qt::KeepAspectRatio));
     connect(moveTimer, &QTimer::timeout, this, &Drop::onMove);
-
-
 }
 
 Drop::~Drop()

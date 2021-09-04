@@ -2,9 +2,6 @@
 #define DROP_H
 
 #include <QGraphicsPixmapItem>
-#include <stdlib.h>
-
-#include "player.h"
 #include "settings.h"
 
 class Drop : public QObject, public QGraphicsPixmapItem

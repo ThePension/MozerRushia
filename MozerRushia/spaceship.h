@@ -7,6 +7,7 @@
 
 #include "settings.h"
 #include "weapon.h"
+#include "drop.h"
 
  class SpaceShip : public QObject, public QGraphicsPixmapItem
 {

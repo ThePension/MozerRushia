@@ -6,7 +6,7 @@ GameOverMenu::GameOverMenu(QObject * parent, QSize * screenSize) : QGraphicsScen
 
     // Creating play arcade button
     replayButton = new MenuButton();
-    replayButton->setText("Rejouer");
+    replayButton->setText("&Rejouer");
     replayButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
     this->addWidget(replayButton);
     replayButton->show();
@@ -14,14 +14,14 @@ GameOverMenu::GameOverMenu(QObject * parent, QSize * screenSize) : QGraphicsScen
 
     // Creating Quit button
     quitButton = new MenuButton();
-    quitButton->setText("Quitter le jeu");
+    quitButton->setText("&Quitter le jeu");
     quitButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 200, 400, 100));
     this->addWidget(quitButton);
     quitButton->show();
 
     // Creating back to menu button
     backToMenuButton = new MenuButton();
-    backToMenuButton->setText("Menu principal");
+    backToMenuButton->setText("Menu &principal");
     backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
     this->addWidget(backToMenuButton);
     backToMenuButton->show();

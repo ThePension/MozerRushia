@@ -8,7 +8,6 @@
 #include <QGraphicsScene>
 #include <QApplication>
 
-
 class HUD: public QGraphicsTextItem
 {
 public:
