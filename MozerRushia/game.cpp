@@ -81,6 +81,7 @@ void Game::runHistory()
 
 void Game::runNarration1()
 {
+    isNarrativePlaying = true;
     connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration1, Qt::UniqueConnection);
     switch (currentNarationStep) {
         case 1:
@@ -111,6 +112,7 @@ void Game::runNarration1()
             historyScene->setBackgroundBrush(QPixmap(":/Narration_A9.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             break;
         case 10:
+            isNarrativePlaying = false;
             runLevel1();
             currentNarationStep = 0;
             break;
@@ -120,6 +122,11 @@ void Game::runNarration1()
 
 void Game::runNarration2()
 {
+    isNarrativePlaying = true;
+
+    moveTimer->stop();
+    spawnTimer->stop();
+
     delete nxtLvl;
     nxtLvl = new MenuButton(this);
     nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
@@ -140,6 +147,7 @@ void Game::runNarration2()
             historyScene->setBackgroundBrush(QPixmap(":/Narration_B3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             break;
         case 4:
+            isNarrativePlaying = false;
             runLevel2();
             currentNarationStep = 0;
             break;
@@ -149,6 +157,8 @@ void Game::runNarration2()
 
 void Game::runNarration3()
 {
+    isNarrativePlaying = true;
+
     delete nxtLvl;
     nxtLvl = new MenuButton(this);
     nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
@@ -178,6 +188,7 @@ void Game::runNarration3()
             historyScene->setBackgroundBrush(QPixmap(":/Narration_C6.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             break;
         case 7:
+            isNarrativePlaying = false;
             runLevel3();
             currentNarationStep = 0;
             break;
@@ -187,6 +198,7 @@ void Game::runNarration3()
 
 void Game::runNarration4()
 {
+    isNarrativePlaying = true;
     delete nxtLvl;
     nxtLvl = new MenuButton(this);
     nxtLvl->setGeometry(QRect(historyScene->width()-210, historyScene->height()-110, 200, 100));
@@ -207,6 +219,7 @@ void Game::runNarration4()
             historyScene->setBackgroundBrush(QPixmap(":/Narration_D3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             break;
         case 4:
+            isNarrativePlaying = false;
             QApplication::quit();
             currentNarationStep = 1;
             return;
@@ -320,6 +333,8 @@ void Game::rotateView(int rotationDegree)
 
 void Game::keyPressEvent(QKeyEvent *e)
 {
+    if(isNarrativePlaying) return;
+
     switch (e->key()) {
             case Qt::Key_Left:
                 // Direction
@@ -361,8 +376,8 @@ void Game::keyPressEvent(QKeyEvent *e)
                     if(player->currentWeapon->weaponNumber <= 21){
                         player->currentWeapon->weaponNumber += 2;
                     }
-                }*/
-                break;
+                }
+                break;*/
         }
 }
 
@@ -406,7 +421,6 @@ void Game::runLevel1()
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     gameScene->clear();
-    this->viewport()->update();
 
     // Timers creations
     spawnTimer = new QTimer();
@@ -593,11 +607,8 @@ void Game::clearGameScene()
     spawnTimer->stop();
     delete spawnTimer;
     spawnTimer = nullptr;
-    if(difficultyTimer != nullptr) {
-        difficultyTimer->stop();
-        delete difficultyTimer;
-        difficultyTimer = nullptr;
-    }
+
+    gameScene->clear();
 
     // Reset the view if it was rotated
     this->resetTransform();
@@ -743,9 +754,7 @@ void Game::gameOver()
     delete resumeButton;
 
     // Display the score
-    QTextDocument * oldDocument = gameOverMenu->scoreText->document();
-    delete oldDocument;
-    oldDocument = nullptr;
+    delete gameOverMenu->scoreText->document();
     QTextDocument * document = new QTextDocument();
     QTextCharFormat charFormat;
     charFormat.setFont(QFont("", 50, QFont::Bold));
@@ -763,8 +772,6 @@ void Game::gameOver()
     /*delete nxtLvl;
     nxtLvl = nullptr;*/
     currentLvl = lvl;
-
-
 
     // Show cursor
     QApplication::setOverrideCursor(Qt::ArrowCursor);
@@ -907,13 +914,14 @@ void Game::onBackToMainMenu()
     gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
 
     // Delete next level button
+    if(nxtLvl != nullptr) nxtLvl->hide();
     delete nxtLvl;
     nxtLvl = nullptr;
     currentLvl = 1;
 
     // Clear all scenes
     gameScene->clear();
-    // historyScene->clear();
+    historyScene->clear();
 
     displayMainMenu();
 }

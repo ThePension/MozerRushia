@@ -79,6 +79,7 @@ private:
     int hitLive=gMaxHealth;
     int spawnTimeInterval = 1000;
     int currentNarationStep = 1;
+    bool isNarrativePlaying = false;
 
 protected:
     void keyPressEvent(QKeyEvent * e) override;
