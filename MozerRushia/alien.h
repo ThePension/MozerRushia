@@ -3,6 +3,7 @@
 
 #include "spaceship.h"
 
+#include <QTimer>
 
 class Alien : public SpaceShip
 {

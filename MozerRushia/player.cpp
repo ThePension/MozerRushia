@@ -1,6 +1,4 @@
 #include "player.h"
-#include <QTimer>
-#include <QGraphicsScene>
 
 Player::Player(QPixmap sprite, QGraphicsItem *parent, QTimer * timer) : SpaceShip(sprite, parent)
 {
@@ -12,7 +10,6 @@ Player::~Player()
     delete currentWeapon;
     currentWeapon = nullptr;
 }
-
 
 void Player::onMove()
 {
@@ -48,6 +45,4 @@ void Player::onMove()
             emit sigDropPlayerCollision(pDrop);
         }
     }
-
 }
-

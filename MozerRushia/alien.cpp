@@ -1,5 +1,4 @@
 #include "alien.h"
-#include <QTimer>
 
 Alien::Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer, int speedAlien) : SpaceShip(sprite, parent)
 {

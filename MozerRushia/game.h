@@ -3,9 +3,14 @@
 
 #include <QGraphicsView>
 #include <QKeyEvent>
-#include <QPushButton>
 #include <QTextCursor>
-// #include <Q
+#include <QPixmap>
+#include <QTimer>
+#include <QApplication>
+#include <windows.h>
+#include <mmsystem.h>
+#include <QDir>
+#include <QDebug>
 
 #include "player.h"
 #include "settings.h"

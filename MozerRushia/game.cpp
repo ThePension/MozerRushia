@@ -1,13 +1,4 @@
 #include "game.h"
-#include <QPixmap>
-#include <QTimer>
-#include <QPushButton>
-#include <QApplication>
-#include <QHBoxLayout>
-#include <windows.h>
-#include <mmsystem.h>
-#include <QDir>
-#include <QDebug>
 
 Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 {
@@ -826,7 +817,6 @@ void Game::onArcadeModeBackgroundScrolling()
         qScrollingBg2->setPos(0, -qScrollingBg2->pixmap().size().height());
     }
 }
-
 
 void Game::onSpawn()
 {

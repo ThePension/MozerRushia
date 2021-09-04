@@ -12,7 +12,6 @@ HUD::HUD(QGraphicsItem *parent) :QGraphicsTextItem(parent)
     setPos(txPos,tyPos);
 }
 
-
 HUD::~HUD()
 {
 
@@ -28,7 +27,6 @@ void HUD::reset()
     my_Score=0;
     my_Health=gMaxHealth;
     setPlainText(QString("Health : ")+QString::number(my_Health)+"\n"+QString("Score : ")+QString::number(my_Score));
-
 }
 
 
