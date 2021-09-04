@@ -28,6 +28,9 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     gameOverMenu->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
     connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
+
+    // Randomize random numbers
+    srand((unsigned int)time(NULL));
 }
 
 void Game::displayMainMenu(){
