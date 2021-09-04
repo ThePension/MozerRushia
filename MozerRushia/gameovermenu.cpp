@@ -25,7 +25,6 @@ GameOverMenu::GameOverMenu(QObject * parent, QSize * screenSize) : QGraphicsScen
     backToMenuButton->setGeometry(QRect(width() / 2 - 200, height() / 2 + 60, 400, 100));
     this->addWidget(backToMenuButton);
     backToMenuButton->show();
-    backToMenuButton->setDefault(true);
 
     // Creation score text item
     scoreText = new QGraphicsTextItem("Score : ", nullptr);
@@ -56,6 +55,19 @@ GameOverMenu::~GameOverMenu()
     replayButton = nullptr;
     delete scoreText;
     scoreText = nullptr;
+    delete quitButton;
+    quitButton = nullptr;
     delete scoreTextDocument;
     scoreTextDocument = nullptr;
+}
+
+void GameOverMenu::disconnectReplayButtonConnection(){
+    delete replayButton;
+    replayButton = nullptr;
+    // Creating play arcade button
+    replayButton = new MenuButton();
+    replayButton->setText("&Rejouer");
+    replayButton->setGeometry(QRect(width() / 2 - 200, height() / 2 - 60, 400, 100));
+    this->addWidget(replayButton);
+    replayButton->show();
 }

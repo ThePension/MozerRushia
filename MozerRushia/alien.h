@@ -12,11 +12,14 @@ class Alien : public SpaceShip
 public:
     Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer, int speed);
     ~Alien();
+    QTimer * shootTimer = nullptr;
 
 signals:
     void sigAlienOutOfRange(Alien*);
+    void sigAlienShoot(Alien*);
 public slots:
     void onMove();
+    void onShoot();
 
 };
 

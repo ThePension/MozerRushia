@@ -20,6 +20,8 @@ public:
     MenuButton * backToMenuButton;
     QGraphicsTextItem * scoreText;
     QTextDocument * scoreTextDocument;
+
+    void disconnectReplayButtonConnection();
 };
 
 #endif // GAMEOVERMENU_H

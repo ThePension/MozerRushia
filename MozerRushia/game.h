@@ -11,6 +11,7 @@
 #include <mmsystem.h>
 #include <QDir>
 #include <QDebug>
+#include <QtMath>
 
 #include "player.h"
 #include "settings.h"
@@ -54,6 +55,8 @@ public slots:
     void onBulletOutOfRange(Bullet*); // A Bullet went out of the screen
     void onDropOutOfRange(Drop*); // A Drop went out of the screen
     void onPlayerShoot(); // The Player shot a Bullet
+    void onAlienShoot(Alien *);
+    void onPlayerBulletCollision(Bullet *);
 
 private:
     void gameOver();
@@ -69,7 +72,7 @@ private:
     MenuButton * nxtLvl = nullptr;
     QGraphicsScene * gameScene;
     QGraphicsScene * historyScene;
-    GameOverMenu * gameOverMenu;
+    GameOverMenu * gameOverMenu = nullptr;
     HUD* HUDMan = nullptr;
     QGraphicsPixmapItem * qScrollingBg;
     QGraphicsPixmapItem * qScrollingBg2 = nullptr;

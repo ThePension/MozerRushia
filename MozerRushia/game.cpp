@@ -27,7 +27,7 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
     gameOverMenu = new GameOverMenu(this, screenSize);
     gameOverMenu->setSceneRect(0, 0, screenSize->width(), screenSize->height());
     connect(gameOverMenu->quitButton, &MenuButton::clicked, this, &QApplication::quit, Qt::UniqueConnection);
-    connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::displayMainMenu, Qt::UniqueConnection);
+    connect(gameOverMenu->backToMenuButton, &MenuButton::clicked, this, &Game::onBackToMainMenu, Qt::UniqueConnection);
 }
 
 void Game::displayMainMenu(){
@@ -52,6 +52,7 @@ void Game::runHistory()
 {
     // Clear history scene
     historyScene->clear();
+    gameScene->clear();
 
     // Change scene for history scene
     setScene(historyScene);
@@ -464,7 +465,7 @@ void Game::runLevel1()
     // Connection for player movements
     connect(moveTimer, &QTimer::timeout, player, &Player::onMove, Qt::UniqueConnection);
 
-    spawnTimer->start(spawnTimeInterval);
+    spawnTimer->start(1000);
     connect(spawnTimer, &QTimer::timeout, this, &Game::onSpawn, Qt::UniqueConnection);
 
     HUDMan=new HUD(nullptr);
@@ -627,20 +628,19 @@ void Game::decreaseHealth()
     if (hitLive <=0)
     {
         hitLive=3;
-        gameOver();
         HUDMan->reset();
+        gameOver();
     }
 }
 
 void Game::onAlienPlayerCollision(Alien* pAlien)
 {
-    decreaseHealth();
     if(pAlien != nullptr)
     {
         gameScene->removeItem(pAlien);
         delete pAlien;
     }
-
+    decreaseHealth();
 }
 
 void Game::onDropPlayerCollision(Drop* pDrop)
@@ -712,7 +712,7 @@ void Game::onPlayerShoot()
     {angle = 0;}
     for(int i = 0; i < weaponNumber; i++)
     {
-        pBullet = new Bullet(bSprite, bulletSpeed, angle, nullptr, moveTimer);
+        pBullet = new Bullet(bSprite, angle, playerBulletSpeed, nullptr, moveTimer);
         pBullet->setPos(player->pos().x() + spaceShipSize.width()/2 - bulletSize.width()/2, player->pos().y() - bulletSize.height() / 2);
         gameScene->addItem(pBullet);
         connect(pBullet, &Bullet::sigBulletOutOfRange, this, &Game::onBulletOutOfRange, Qt::UniqueConnection);
@@ -721,11 +721,44 @@ void Game::onPlayerShoot()
     }
 }
 
+void Game::onAlienShoot(Alien * pAlien)
+{
+    QPixmap bSprite(":/AmericanBullet.png");
+
+    // Calculate angle
+    double x = player->pos().x() - pAlien->pos().x();
+    double y = gameScene->height() - pAlien->pos().y();
+    double angle = qAtan(y/x);
+
+    // Calculate offsets
+    double offsetY = alienBulletSpeed * qSin(angle);
+    double offsetX = alienBulletSpeed * qCos(angle);
+    if(x < 0){
+        offsetY = -offsetY;
+        offsetX = -offsetX;
+    }
+    // Create bullet
+    Bullet * pBullet = new Bullet(bSprite, offsetX, offsetY, nullptr, moveTimer);
+    pBullet->setPos(pAlien->pos().x() + spaceShipSize.width()/2 - bulletSize.width()/2, pAlien->pos().y() + bulletSize.height() / 2);
+    gameScene->addItem(pBullet);
+    connect(pBullet, &Bullet::sigBulletOutOfRange, this, &Game::onBulletOutOfRange, Qt::UniqueConnection);
+    connect(pBullet, &Bullet::sigPlayerBulletCollision, this, &Game::onPlayerBulletCollision, Qt::UniqueConnection);
+}
+
+void Game::onPlayerBulletCollision(Bullet * pBullet)
+{
+    if(pBullet != nullptr)
+    {
+        gameScene->removeItem(pBullet);
+        delete pBullet;
+    }
+    decreaseHealth();
+}
+
 void Game::gameOver()
 {
     // Change scene for game over
     setScene(gameOverMenu);
-
 
     this->resetTransform();
 
@@ -733,19 +766,26 @@ void Game::gameOver()
     delete difficultyTimer;
     difficultyTimer = nullptr;
     delete moveTimer;
+    moveTimer = nullptr;
     delete spawnTimer;
     spawnTimer = nullptr;
 
     // Delete attributes that are in gameScene
     delete player;
+    player = nullptr;
     delete qScrollingBg;
+    qScrollingBg = nullptr;
     delete qScrollingBg2;
+    qScrollingBg2 = nullptr;
     delete backToMenuButton;
+    backToMenuButton = nullptr;
     delete quitButton;
+    quitButton = nullptr;
     delete resumeButton;
+    resumeButton = nullptr;
 
     // Display the score
-    delete gameOverMenu->scoreText->document();
+    // delete gameOverMenu->scoreText->document();
     QTextDocument * document = new QTextDocument();
     QTextCharFormat charFormat;
     charFormat.setFont(QFont("", 50, QFont::Bold));
@@ -763,6 +803,9 @@ void Game::gameOver()
     /*delete nxtLvl;
     nxtLvl = nullptr;*/
     currentLvl = lvl;
+
+    historyScene->clear();
+    gameScene->clear();
 
     // Show cursor
     QApplication::setOverrideCursor(Qt::ArrowCursor);
@@ -830,7 +873,6 @@ void Game::onSpawn()
             break;
         case 3:
             spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"), storyShuttleSpeed);
-
             break;
     }
 }
@@ -858,14 +900,25 @@ void Game::spawnAlien(QPixmap sprite, int speed)
     gameScene->addItem(pAlien);
     pAlien->setPos(posX, -alienSize.height());
     connect(pAlien, &Alien::sigAlienOutOfRange, this, &Game::onAlienOutOfRange);
+    connect(pAlien, &Alien::sigAlienShoot, this, &Game::onAlienShoot);
+    if(sprite.toImage() == QPixmap(":/AmericanShuttle_Lvl.png").toImage()){
+        onAlienShoot(pAlien);
+    }
 }
 
 void Game::onBackToMainMenu()
 {
+    // Disconnect replay button connection
+    gameOverMenu->disconnectReplayButtonConnection();
+
+    // Reset the view if it was rotated
+    this->resetTransform();
+    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
+
     // Reset the scores, lives and the level
-    currentLvl=lvl;
-    hitCount=0;
-    hitLive=gMaxHealth;
+    currentLvl = lvl;
+    hitCount = 0;
+    hitLive = gMaxHealth;
 
     // Delete pause button (because gameScene->clear doesn't do it if they're attributes of Game class)
     delete backToMenuButton;
@@ -876,14 +929,12 @@ void Game::onBackToMainMenu()
     quitButton = nullptr;
 
     // Delete timers
+    delete difficultyTimer;
+    difficultyTimer = nullptr;
     delete moveTimer;
     moveTimer = nullptr;
     delete spawnTimer;
     spawnTimer = nullptr;
-    if(difficultyTimer != nullptr) {
-        delete difficultyTimer;
-        difficultyTimer = nullptr;
-    }
 
     // Delete attributes that are in gameScene
     delete player;
@@ -899,15 +950,13 @@ void Game::onBackToMainMenu()
     delete resumeButton;
     resumeButton = nullptr;
 
-    // Reset the view if it was rotated
-    this->resetTransform();
-    gameScene->setSceneRect(0, 0, screenSize->height(), screenSize->width());
-
-    // Delete next level button
-    if(nxtLvl != nullptr) nxtLvl->hide();
-    delete nxtLvl;
-    nxtLvl = nullptr;
-    currentLvl = 1;
+    if(isNarrativePlaying){
+        isNarrativePlaying = false;
+        nxtLvl->hide();
+        delete nxtLvl;
+        nxtLvl = nullptr;
+        currentLvl = 1;
+    }
 
     // Clear all scenes
     gameScene->clear();

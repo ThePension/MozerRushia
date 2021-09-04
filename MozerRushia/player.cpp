@@ -35,6 +35,7 @@ void Player::onMove()
         if(pAlien != nullptr)
         {
             emit sigAlienPlayerCollision(pAlien);
+            return;
         }
     }
     for(auto const pItem : firstCollidingItem)
@@ -43,6 +44,7 @@ void Player::onMove()
         if(pDrop != nullptr)
         {
             emit sigDropPlayerCollision(pDrop);
+            return;
         }
     }
 }

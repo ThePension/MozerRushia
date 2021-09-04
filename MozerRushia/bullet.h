@@ -7,22 +7,23 @@
 
 #include "settings.h"
 #include "alien.h"
+#include "player.h"
 
 class Bullet : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 
 public:
-    Bullet(QPixmap sprite, int speed, double offset, QGraphicsItem* parent, QTimer * moveTimer);
+    Bullet(QPixmap sprite, double offsetX, double offsetY, QGraphicsItem* parent, QTimer * moveTimer);
     ~Bullet();
-    int speed;
-    double offset = 0;
+    double offsetY = 0;
+    double offsetX = 0;
 
 signals:
     void sigBulletOutOfRange(Bullet *);
     void sigAlienBulletCollision(Alien*, Bullet*);
-private:
-    QTimer *timer;
+    void sigPlayerBulletCollision(Bullet*);
+
 private slots :
     void onMove();
 };
