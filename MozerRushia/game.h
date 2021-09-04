@@ -79,6 +79,7 @@ private:
     QSize * screenSize;
     QTimer * spawnTimer = nullptr;
     QTimer * difficultyTimer = nullptr;
+    QTimer * alienShootTimer = nullptr;
     MenuButton * resumeButton;
     MenuButton * quitButton;
     MenuButton * backToMenuButton;

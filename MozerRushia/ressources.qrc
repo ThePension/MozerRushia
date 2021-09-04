@@ -19,7 +19,6 @@
         <file>PlayerRocket.png</file>
         <file>PlayerRocket_Left.png</file>
         <file>PlayerRocket_Right.png</file>
-        <file>Seamless_Background.png</file>
         <file>SovietBullet.png</file>
         <file>BackGround_Lvl1.jpg</file>
         <file>AmericanBullet.png</file>
@@ -44,5 +43,6 @@
         <file>Narration_D1.png</file>
         <file>Narration_D2.png</file>
         <file>Narration_D3.png</file>
+        <file>Seamless_Background3.jpg</file>
     </qresource>
 </RCC>

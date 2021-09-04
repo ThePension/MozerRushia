@@ -10,9 +10,8 @@ class Alien : public SpaceShip
     Q_OBJECT
 
 public:
-    Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer, int speed);
+    Alien(QPixmap sprite, QGraphicsItem *parent, QTimer * timer, int speed, QTimer * alienShootTimer);
     ~Alien();
-    QTimer * shootTimer = nullptr;
 
 signals:
     void sigAlienOutOfRange(Alien*);

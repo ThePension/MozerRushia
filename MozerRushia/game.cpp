@@ -238,6 +238,8 @@ void Game::runArcade()
     // Timers creations
     spawnTimer = new QTimer();
     moveTimer = new QTimer();
+    alienShootTimer = new QTimer();
+    alienShootTimer->start(AlienSpeedShootInvervalInMs);
 
     // Replay button connection
     connect(gameOverMenu->replayButton, &MenuButton::clicked, this, &Game::runArcade, Qt::UniqueConnection);
@@ -268,7 +270,7 @@ void Game::runArcade()
 
     // Background 1 image
     qScrollingBg = new QGraphicsPixmapItem();
-    QPixmap bgPixmap = QPixmap(":/Seamless_Background.png").scaledToWidth(gameScene->width());
+    QPixmap bgPixmap = QPixmap(":/Seamless_Background3.jpg").scaledToWidth(gameScene->width());
     qScrollingBg->setPixmap(bgPixmap);
     qScrollingBg->setPos(0, -(bgPixmap.size().height() - gameScene->height()));
     gameScene->addItem(qScrollingBg);
@@ -391,6 +393,7 @@ void Game::pauseTheGame()
     moveTimer->stop(); // Pause the game
     spawnTimer->stop();
     resumeButton->show();
+    alienShootTimer->stop();
     backToMenuButton->show();
     quitButton->show();
     // Show cursor
@@ -404,6 +407,7 @@ void Game::resumeTheGame()
     backToMenuButton->close();
     moveTimer->start(1000/FPS); // Restart
     spawnTimer->start(spawnTimeInterval);
+    alienShootTimer->start(AlienSpeedShootInvervalInMs);
     // Hide cursor
     QApplication::setOverrideCursor(Qt::BlankCursor);
 }
@@ -412,6 +416,10 @@ void Game::runLevel1()
 {
     // Hide change level button
     nxtLvl->hide();
+
+    // Create alien shoot timer
+    alienShootTimer = new QTimer();
+    alienShootTimer->start(AlienSpeedShootInvervalInMs);
 
     // Hide cursor
     QApplication::setOverrideCursor(Qt::BlankCursor);
@@ -489,6 +497,10 @@ void Game::runLevel2()
     // Hide change level button
     nxtLvl->hide();
 
+    // Create alien shoot timer
+    alienShootTimer = new QTimer();
+    alienShootTimer->start(AlienSpeedShootInvervalInMs);
+
     // Hide cursor
     QApplication::setOverrideCursor(Qt::BlankCursor);
 
@@ -546,6 +558,10 @@ void Game::runLevel3()
 
     // Hide change level button
     nxtLvl->hide();
+
+    // Create alien shoot timer
+    alienShootTimer = new QTimer();
+    alienShootTimer->start(AlienSpeedShootInvervalInMs);
 
     // Hide cursor
     QApplication::setOverrideCursor(Qt::BlankCursor);
@@ -793,6 +809,8 @@ void Game::gameOver()
     moveTimer = nullptr;
     delete spawnTimer;
     spawnTimer = nullptr;
+    delete alienShootTimer;
+    alienShootTimer = nullptr;
 
     // Delete attributes that are in gameScene
     delete player;
@@ -919,7 +937,7 @@ void Game::onSpawnArcade()
 
 void Game::spawnAlien(QPixmap sprite, int speed)
 {
-    Alien *pAlien = new Alien(sprite, nullptr, moveTimer, speed);
+    Alien *pAlien = new Alien(sprite, nullptr, moveTimer, speed, alienShootTimer);
     int posX = rand() % int(gameScene->width() - alienSize.width());
     gameScene->addItem(pAlien);
     pAlien->setPos(posX, -alienSize.height());
@@ -962,6 +980,8 @@ void Game::onBackToMainMenu()
     moveTimer = nullptr;
     delete spawnTimer;
     spawnTimer = nullptr;
+    delete alienShootTimer;
+    alienShootTimer = nullptr;
 
     // Delete attributes that are in gameScene
     delete player;
