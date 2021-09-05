@@ -951,7 +951,7 @@ void Game::spawnAlien(QPixmap sprite, int speed)
 void Game::onBackToMainMenu()
 {
     // Reset play weapon number
-    player->currentWeapon->weaponNumber = weaponNumber;
+    // player->currentWeapon->weaponNumber = weaponNumber;
 
     // Disconnect replay button connection
     gameOverMenu->disconnectReplayButtonConnection();
