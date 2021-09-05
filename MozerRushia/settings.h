@@ -19,12 +19,12 @@ double const bulletAngle = 0.5;
 int const playerBulletSpeed = -5;
 int const alienBulletSpeed = 8;
 int const dropSpeed = 3;
-int const arcadeAlienSpeed = 2;
+int const arcadeAlienSpeed = 3;
 int const arcadeAsteroidSpeed = 1;
-int const arcadeShuttleSpeed = 3;
+int const arcadeShuttleSpeed = 2;
 int const storyAlienSpeed = 6;
 int const storyAsteroidSpeed = 2;
-int const storyShuttleSpeed = 4;
-int const AlienSpeedShootInvervalInMs = 500;
+int const storyShuttleSpeed = 3;
+int const AlienSpeedShootInvervalInMs = 1000;
 
 #endif // SETTINGS_H

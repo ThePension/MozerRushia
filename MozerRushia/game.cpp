@@ -216,8 +216,9 @@ void Game::runNarration4()
             historyScene->setBackgroundBrush(QPixmap(":/Narration_D3.png").scaled(screenSize->width(), screenSize->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             break;
         case 4:
-            isNarrativePlaying = false;
-            QApplication::quit();
+            isNarrativePlaying = false;       
+            delete nxtLvl;
+            onBackToMainMenu();
             currentNarationStep = 1;
             return;
             break;
@@ -881,7 +882,7 @@ void Game::onBackgroundScrolling()
 
         moveTimer->stop();
 
-        gameScene->clear();
+        // gameScene->clear();
 
         // Show cursor
         QApplication::setOverrideCursor(Qt::ArrowCursor);
