@@ -6,7 +6,7 @@ Drop::Drop(int speed, QGraphicsItem *parent, QTimer *moveTimer) : QGraphicsPixma
 {
     this->speed = speed;
     QPixmap sprite;
-    type = (rand() % 3 + 1);
+    type = (rand() % 3 + 1); // 33% chances to spawn for each drop
     switch (type) {
         case 1:
             sprite = (QPixmap)":/Drop_Weapon_Up.png";

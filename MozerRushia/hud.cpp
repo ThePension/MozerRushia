@@ -1,5 +1,4 @@
 #include "hud.h"
-/**/ // pas mal de tri a refaire dans cette classe
 
 HUD::HUD(QGraphicsItem *parent) :QGraphicsTextItem(parent)
 {

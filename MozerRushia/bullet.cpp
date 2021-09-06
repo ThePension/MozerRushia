@@ -21,7 +21,10 @@ void Bullet::onMove()
         emit sigBulletOutOfRange(this);
         return;
     }
+
     QList<QGraphicsItem*> firstCollidingItem = collidingItems();
+
+    // Collision detection between bullet and Alien
     if(this->offsetY < 0){
         for(auto const pItem : firstCollidingItem)
         {
@@ -33,6 +36,7 @@ void Bullet::onMove()
             }
         }
     }
+    // Collision detection between bullet and Player
     if(this->offsetY > 0){
         for(auto const pItem : firstCollidingItem)
         {

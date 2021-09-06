@@ -8,8 +8,6 @@ enum Direction { any, left, right };
 QSize const spaceShipSize = QSize(120, 150);
 QSize const bulletSize = QSize(50, 50);
 QSize const alienSize = QSize(150, 150);
-//Qsize const alienShipSize=QSize(150,75);
-//Qsize const alienRocketSize=
 QSize const dropSize = QSize(50, 50);
 
 int const FPS = 144;

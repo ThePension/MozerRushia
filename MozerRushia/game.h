@@ -63,7 +63,6 @@ public slots:
     void onPlayerShoot(); // The Player shot a Bullet
     void onAlienShoot(Alien *);
     void onPlayerBulletCollision(Bullet *);
-    void onPlaySong();
 
 private:
     Player * player = nullptr;
@@ -89,6 +88,7 @@ private:
     int spawnTimeInterval = 1000;
     int currentNarationStep = 1;
     bool isNarrativePlaying = false;
+    bool isArcadeMusicPlaying = 0;
     int weaponNumber = 1;
 
 protected:
