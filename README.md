@@ -31,3 +31,5 @@ Cependant l'affreux Biden ne vous laissera pas revenir indemne de votre épopée
 
 ## Mode arcade
 Le mode arcade est infini. Les trois types d'ennemis peuvent apparaître. La difficulté augmente avec le temps.
+
+![Arcade](MozerRushia/arcade.png)
