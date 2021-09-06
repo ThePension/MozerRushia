@@ -8,11 +8,11 @@ Se déplacer à droite : Flèche droite du clavier
 Tirer une balle : Touche espace du clavier
 
 ## Bonus / Maluces
-[Bonus vert](Drop_Life.png) Vie supplémentaire
+![Bonus vert](MozerRushia/Drop_Life.png) Vie supplémentaire
 
-[Bonus bleu](Drop_Weapon_Up.png) Nombre de balles tiré + 2
+![Bonus bleu](MozerRushia/Drop_Weapon_Up.png) Nombre de balles tiré + 2
 
-[Maluce rouge](Drop_Weapon_Down.png) Nombre de balles tiré - 2
+![Maluce rouge](MozerRushia/Drop_Weapon_Down.png) Nombre de balles tiré - 2
 
 ## Mode histoire
 ### Niveau 1 - Conquête de la Lune
