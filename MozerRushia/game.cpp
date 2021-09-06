@@ -34,13 +34,15 @@ Game::Game(QWidget *parent, QSize * screenSize) : QGraphicsView(parent)
 
     // Music theme
     // Code tiré de https://www.debugcn.com/en/article/14341438.html - copie les fichiers resources Qt dans le \temp du système
-    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
-    QFile::copy(":/mainTheme.wav", path);
-    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+    QString path = QDir::temp().absoluteFilePath("storyTheme.wav");
+    QFile::copy(":/storyTheme.wav", path);
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    path = QDir::temp().absoluteFilePath("arcadeTheme.wav");
+    QFile::copy(":/arcadeTheme.wav", path);
 
     QTimer * playSongLoopTimer = new QTimer();
     playSongLoopTimer->start(138000); // 2min18sec
-    connect(playSongLoopTimer, &QTimer::timeout, this, &Game::onPlaySong);
+    //connect(playSongLoopTimer, &QTimer::timeout, this, &Game::onPlaySong);
 }
 
 void Game::displayMainMenu(){
@@ -78,6 +80,7 @@ void Game::runHistory()
 
 void Game::runNarration1()
 {
+
     isNarrativePlaying = true;
     connect(nxtLvl, &MenuButton::clicked, this, &Game::runNarration1, Qt::UniqueConnection);
     switch (currentNarationStep) {
@@ -228,8 +231,13 @@ void Game::runNarration4()
 
 void Game::runArcade()
 {
+    QString path = QDir::temp().absoluteFilePath("arcadeTheme.wav");
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     // Hide cursor
     QApplication::setOverrideCursor(Qt::BlankCursor);
+
+    // Reset weapon upgrade
+    weaponNumber = 1;
 
     // Reset scene rect
     gameScene->setSceneRect(0, 0, screenSize->width(), screenSize->height());
@@ -788,9 +796,8 @@ void Game::onPlayerBulletCollision(Bullet * pBullet)
 
 void Game::onPlaySong()
 {
-    qDebug() << "OnplaySong";
-    QString path = QDir::temp().absoluteFilePath("mainTheme.wav");
-    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC);
+    QString path = QDir::temp().absoluteFilePath("storyTheme.wav");
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
 
 void Game::gameOver()
@@ -912,7 +919,7 @@ void Game::onSpawn()
             spawnAlien(QPixmap(":/Asteroid.png"), storyAsteroidSpeed);
             break;
         case 2:
-            spawnAlien(QPixmap(":/AlienShip_Lvl2.png"), storyAsteroidSpeed);
+            spawnAlien(QPixmap(":/AlienShip_Lvl2.png"), storyAlienSpeed);
             break;
         case 3:
             spawnAlien(QPixmap(":/AmericanShuttle_Lvl.png"), storyShuttleSpeed);
@@ -925,7 +932,7 @@ void Game::onSpawnArcade()
     int randSprite = rand()%(3);
     switch (randSprite) {
         case 0:
-            spawnAlien(QPixmap(":/Asteroid.png"), arcadeAsteroidSpeed);
+            spawnAlien(QPixmap(":/Asteroid2.png"), arcadeAsteroidSpeed);
             break;
         case 1:
             spawnAlien(QPixmap(":/AlienShip.png"), arcadeAlienSpeed);
@@ -951,9 +958,8 @@ void Game::spawnAlien(QPixmap sprite, int speed)
 
 void Game::onBackToMainMenu()
 {
-    // Reset play weapon number
-    // player->currentWeapon->weaponNumber = weaponNumber;
-
+    QString path = QDir::temp().absoluteFilePath("arcadeTheme.wav");
+    PlaySound((wchar_t*)path.utf16(), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     // Disconnect replay button connection
     gameOverMenu->disconnectReplayButtonConnection();
 

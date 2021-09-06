@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>mainTheme.wav</file>
         <file>BackGround_Lvl2.jpg</file>
         <file>BackGround_Lvl3.jpg</file>
         <file>AlienShip.png</file>
@@ -12,7 +11,6 @@
         <file>Drop_Life.png</file>
         <file>Drop_Weapon_Down.png</file>
         <file>Drop_Weapon_Up.png</file>
-        <file>Fond_Menu.png</file>
         <file>GameOver.png</file>
         <file>Icone.png</file>
         <file>Narration_Test.png</file>
@@ -44,5 +42,8 @@
         <file>Narration_D2.png</file>
         <file>Narration_D3.png</file>
         <file>Seamless_Background3.jpg</file>
+        <file>Fond_Menu.png</file>
+        <file>storyTheme.wav</file>
+        <file>arcadeTheme.wav</file>
     </qresource>
 </RCC>
